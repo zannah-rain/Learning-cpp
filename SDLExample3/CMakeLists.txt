@@ -1,4 +1,4 @@
-# Set the .exe to window mode instead of console mode, and the entry point to main()
+# Set the .exe to console mode, and the entry point to main()
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")
 
 # Create a .exe
