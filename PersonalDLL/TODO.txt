@@ -1,0 +1,12 @@
+Change pointers to smartpointers
+Add Math / Vector functions
+Make some sort of wrapper for the SDL functions which would handle shutting it down naturally
+Make some sort of wrapper for THAT so my stuff is not dependent on which engine I'm using?
+Make a smartpointer class (unique + shared)
+Make a FilePath class
+Make an .ini muncher
+Make a synced notes app
+Make a journal writing / world building app
+	All features of the mob one + timelines!
+Pokemon clone: Pets are literally trained via reinforcement learning
+	And they can make friends / need to learn to play together

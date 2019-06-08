@@ -1,0 +1,4 @@
+Function parameters:
+	Should be prefixed with p
+	Should be declared const if they aren't going to be changed
+	{} should always be on their own line
