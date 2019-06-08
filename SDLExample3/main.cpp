@@ -1,4 +1,5 @@
 #include "SDL.h"
+#undef main
 #include <string>
 #include <iostream>
 #include "Logger.h"

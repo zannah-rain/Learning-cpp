@@ -1,5 +1,5 @@
 # Set the .exe to window mode instead of console mode, and the entry point to main()
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:wmainCRTStartup")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")
 
 # Create a .exe
 add_executable(SDLExample3 main.cpp)
