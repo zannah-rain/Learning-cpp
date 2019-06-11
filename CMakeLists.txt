@@ -13,3 +13,6 @@ add_subdirectory (PersonalDLL)
 add_subdirectory (PersonalDLLTests)
 add_subdirectory (SDLExample3)
 add_subdirectory (SDL2-2.0.9 EXCLUDE_FROM_ALL)
+
+# Remove some project spam from IDEs
+set_property (GLOBAL PROPERTY USE_FOLDERS ON)

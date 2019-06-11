@@ -10,4 +10,6 @@ Make a journal writing / world building app
 	All features of the mob one + timelines!
 Pokemon clone: Pets are literally trained via reinforcement learning
 	And they can make friends / need to learn to play together
+	Eggs, hatched walking + over time
+	The younger you train from, the more powerful they get
 Make a 2D editor
