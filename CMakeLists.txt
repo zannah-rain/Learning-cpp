@@ -9,8 +9,8 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # Build all 3 of my other projects
-add_subdirectory (PersonalDLL)
-add_subdirectory (PersonalDLLTests)
+add_subdirectory (GeneralLib)
+add_subdirectory (GeneralLibTests)
 add_subdirectory (SDLExample3)
 add_subdirectory (SDL2-2.0.9 EXCLUDE_FROM_ALL)
 

@@ -5,7 +5,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:
 add_executable(SDLExample3 main.cpp)
 
 # It depends on the .dll made in a previous project
-target_link_libraries(SDLExample3 PersonalDLL)
+target_link_libraries(SDLExample3 GeneralLib)
 
 # Also it depends on SDL!!!!!!
 target_link_libraries(SDLExample3 SDL2)
