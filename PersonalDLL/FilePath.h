@@ -1,13 +1,3 @@
-#ifdef _WIN32
-#    ifdef LIBRARY_EXPORTS
-#        define LIBRARY_API __declspec(dllexport)
-#    else
-#        define LIBRARY_API __declspec(dllimport)
-#    endif
-#elif
-#    define LIBRARY_API
-#endif
-
 #pragma once
 #include <string>
 #include <vector>
@@ -15,20 +5,31 @@
 class FilePath
 {
 private:
-
-#ifdef _WIN32
-	// Linux doesn't use drive qualifiers
-	std::string m_Drive;
-#endif
+	// In windows we can guess this based on whether the drive is there or not
+	// In Linux we need it as its own member, based on whether the original path begins with a /
+	bool m_isRelative = true;
 
 	std::vector<std::string> m_Folders;
 	std::string m_File;
 	void addPathPart(std::string);
 
 public:
+	// Initialisers
+	FilePath();
+	FilePath(std::initializer_list<std::string> const pathParts);
+	FilePath(std::string const path);
 
-	LIBRARY_API FilePath(std::initializer_list<std::string> const pathParts);
-	LIBRARY_API FilePath(std::string const path);
-	LIBRARY_API std::string to_string();
+	// Operator overloads
+	FilePath operator+ (const FilePath& rhs);
+
+	// Conversion
+	std::string toString(bool dirOnly = false);
+
+	// Attributes
+	bool isRelative();
+	bool isFile();
+	bool isDirectory();
+	unsigned int size();
+	bool empty();
 };
 

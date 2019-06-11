@@ -1,16 +1,7 @@
-#ifdef _WIN32
-#    ifdef LIBRARY_EXPORTS
-#        define LIBRARY_API __declspec(dllexport)
-#    else
-#        define LIBRARY_API __declspec(dllimport)
-#    endif
-#elif
-#    define LIBRARY_API
-#endif
-
 #include <assert.h>
 #include "FilePath.h"
 #include "FileSystem.h"
+#include <exception>
 #include <string>
 
 
@@ -27,12 +18,7 @@ void FilePath::addPathPart(std::string pathPart)
 	// Drives end in a : character
 	if (pathPart.back() == ':') 
 	{
-		// We're only expecting to be "adding" more data to our FilePath
-		// If it turns out we're overwriting something, error
-		assert(m_Drive.size() == 0);
-
-		m_Drive = pathPart;
-		return;
+		m_isRelative = false;
 	}
 #endif
 
@@ -50,22 +36,27 @@ void FilePath::addPathPart(std::string pathPart)
 	return;
 }
 
-LIBRARY_API FilePath::FilePath(std::initializer_list<std::string> const pathParts)
+FilePath::FilePath()
 {
-	for (auto it = pathParts.begin(); it != pathParts.end(); ++it)
+
+}
+
+FilePath::FilePath(std::initializer_list<std::string> const pathParts)
+{
+	for (const auto & pathPart : pathParts)
 	{
-		addPathPart(*it);
+		addPathPart(pathPart);
 	}
 }
 
-LIBRARY_API FilePath::FilePath(const std::string path)
+FilePath::FilePath(const std::string path)
 {
 	std::string currentSection = "";
 	for (int i = 0; i != path.size(); ++i)
 	{
 		if (path[i] == FileSystem::sc_PathSep[0])
 		{
-			if (currentSection != "")
+			if (!currentSection.empty())
 			{
 				addPathPart(currentSection);
 				currentSection = "";
@@ -74,15 +65,82 @@ LIBRARY_API FilePath::FilePath(const std::string path)
 	}
 }
 
-LIBRARY_API std::string FilePath::to_string()
+std::string FilePath::toString(bool dirOnly)
 {
-	std::string full_path = m_Drive;
+	std::string full_path;
+#ifdef _WIN32
+	if (m_isRelative)
+	{
+		full_path += FileSystem::sc_PathSep;
+	}
+#elif
+	if (!m_isRelative)
+	{
+		full_path += FileSystem::sc_PathSep;
+	}
+#endif
 
 	for (auto it = m_Folders.begin(); it != m_Folders.end(); ++it)
 	{
-		full_path += FileSystem::sc_PathSep + *it;
+		full_path += *it + FileSystem::sc_PathSep;
 	}
 
-	full_path += FileSystem::sc_PathSep + m_File;
+	if (!dirOnly)
+	{
+		full_path += m_File;
+	}
 	return full_path;
+}
+
+bool FilePath::isDirectory()
+{
+	return m_File.empty();
+}
+
+bool FilePath::isFile()
+{
+	return !isDirectory();
+}
+
+bool FilePath::isRelative()
+{
+	return m_isRelative;
+}
+
+bool FilePath::empty()
+{
+	return m_Folders.empty() && m_File.empty();
+}
+
+// Operator overloads
+FilePath FilePath::operator+ (const FilePath& rhs)
+{
+	if (!rhs.m_isRelative)
+	{
+		throw std::invalid_argument("Concatenation only defined for relative path rhs.");
+	}
+	if (!this->m_File.empty())
+	{
+		throw std::invalid_argument("Attempted to lengthen a FilePath which already has a file in it.");
+	}
+	if (this->m_isRelative && !rhs.m_isRelative)
+	{
+		throw std::invalid_argument("Attempted to concatenate a static path with a relative one.");
+	}
+
+	FilePath result = *this;
+
+	for (auto it = rhs.m_Folders.cbegin(); it <= rhs.m_Folders.cend(); it++)
+	{
+		result.m_Folders.push_back(*it);
+	}
+
+	result.m_File = rhs.m_File;
+
+	return result;
+}
+
+unsigned int FilePath::size()
+{
+	return m_Folders.size() + !m_File.empty();
 }

@@ -9,12 +9,7 @@ TEST_CASE("FileSystem works as expected", "[FileSystem]")
 	
 	SECTION("members are initialised")
 	{
-		REQUIRE(x.wd.size() > 0);
-		REQUIRE(x.exePath.size() > 0);
-	}
-
-	SECTION("filePath works as expected")
-	{
-		REQUIRE(x.filePath({ "X:", "foo", "bar" }) == "X:\foo\bar");
+		REQUIRE(x.workingDirectory.toString().size() > 0);
+		REQUIRE(x.getExeDirectory().toString().size() > 0);
 	}
 }

@@ -24,17 +24,17 @@ int main(int argc, char* argv[])
 
 	FileSystem fileSystem;
 
-	// Check we've calculated the wd properly
-	if (fileSystem.wd.empty())
+	// Check we've calculated the workingDirectory properly
+	if (fileSystem.workingDirectory.empty())
 	{
 		std::cerr << "Error getting resource path: " << SDL_GetError() << std::endl;
-		std::cerr << fileSystem.getWorkingDirectory() << std::endl;
+		std::cerr << fileSystem.workingDirectory.toString() << std::endl;
 		return 2;
 	}
 	else 
 	{
-		std::string logMessage = ".exe directory: " + fileSystem.wd;
-		logger.log(logMessage);
+		logger.log("Working directory: " + fileSystem.workingDirectory.toString());
+		logger.log("Executable directory: " + fileSystem.getExeDirectory().toString());
 	}
 
 	// Open a window
@@ -65,8 +65,8 @@ int main(int argc, char* argv[])
 	}
 
 	// Load a .bmp
-	std::string imagePath = fileSystem.wdPath({ "Lesson1", "hello.bmp" });
-	std::cout << imagePath << std::endl;
+	FilePath imagePath = fileSystem.wdRelativePath({ "Lesson1", "hello.bmp" });
+	std::cout << imagePath.toString() << std::endl;
 //	SDL_Surface *bmp = SDL_LoadBMP(imagePath.c_str());
 //	if (bmp == nullptr) {
 //		SDL_DestroyRenderer(ren);

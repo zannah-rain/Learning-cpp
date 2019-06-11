@@ -1,16 +1,8 @@
-#ifdef _WIN32
-#    ifdef LIBRARY_EXPORTS
-#        define LIBRARY_API __declspec(dllexport)
-#    else
-#        define LIBRARY_API __declspec(dllimport)
-#    endif
-#elif
-#    define LIBRARY_API
-#endif
-
 #include <string>
 #include <initializer_list>
+#include "FilePath.h"
 #include "FileSystem.h"
+#include "whereami.h"
 
 #ifdef _WIN32
 std::string const FileSystem::sc_PathSep = "\\";
@@ -18,55 +10,58 @@ std::string const FileSystem::sc_PathSep = "\\";
 std::string const FileSystem::sc_PathSep = "/";
 #endif
 
-LIBRARY_API FileSystem::FileSystem()
+FileSystem::FileSystem()
 {
 	// Directory of the .exe and initial working directory
-	exePath = getWorkingDirectory();
-	wd = getWorkingDirectory();
+	exePath = calculateExecutablePath();
+	exeDirectory = FilePath(exePath.toString(false));
+
+	workingDirectory = exeDirectory;
 }
 
-LIBRARY_API std::string FileSystem::filePath(std::initializer_list<std::string> const path_parts)
+FilePath FileSystem::wdRelativePath(std::initializer_list<std::string> const path_parts)
 {
-	auto it = path_parts.begin();
-	std::string full_path = *it;
-	for (it = ++it; it != path_parts.end(); ++it)
+	return workingDirectory + FilePath(path_parts);
+}
+
+FilePath FileSystem::exeRelativePath(std::initializer_list<std::string> const path_parts)
+{
+	return exeDirectory + FilePath(path_parts);
+}
+
+FilePath FileSystem::calculateExecutablePath()
+{
+	char* path = nullptr;
+	int length, dirname_length;
+	std::string pathString;
+
+	// Figure out how long the path is going to be in chars, so we can allocate it ahead of time
+	length = wai_getExecutablePath(NULL, 0, &dirname_length);
+	if (length > 0)
 	{
-		if ((*it).back() != sc_PathSep.back())
+		// Allocate the right amount of memory (returns pointer to the first bit)
+		path = (char*)malloc(length + 1); //TODO: Make smart pointer alternative
+		if (!path) // If memory allocation failed
 		{
-			full_path += sc_PathSep + *it;
+			std::abort();
 		}
-		else
-		{
-			full_path += *it;
-		}
+		wai_getExecutablePath(path, length, &dirname_length);
+		path[length] = '\0'; // Add null terminating character to signify the end of the char array
+		pathString = path;
+		free(path);
 	}
-	return full_path;
+
+	FilePath x = pathString;
+
+	return x;
 }
 
-LIBRARY_API std::string FileSystem::wdPath(std::initializer_list<std::string> const path_parts)
+FilePath FileSystem::getExePath()
 {
-	return wd + filePath(path_parts);
+	return exePath;
 }
 
-// Get the directory that the .exe file is in
-LIBRARY_API std::string FileSystem::getWorkingDirectory()
+FilePath FileSystem::getExeDirectory()
 {
-	std::string basePath = "TODO";
-		
-	// SDL returns a pointer to the actual path
-	// char * basePathPointer = SDL_GetBasePath();
-		
-	//if (basePathPointer == nullptr)
-	//{
-	//	// If it's nullptr then SDL couldn't do it
-	//	basePath = "";
-	//}
-	//else
-	//{
-	//	basePath = basePathPointer;
-	//}
-
-	// Free up SDLs copy of it
-	//SDL_free(basePathPointer);
-	return basePath;
+	return exeDirectory;
 }
