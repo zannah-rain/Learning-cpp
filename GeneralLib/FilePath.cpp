@@ -53,9 +53,9 @@ FilePath::FilePath(std::initializer_list<std::string> const pathParts)
 FilePath::FilePath(const std::string path)
 {
 	std::string currentSection = "";
-	for (std::size_t i = 0; i != path.size(); ++i)
+	for (char i : path)
 	{
-		if (path[i] == FileSystem::sc_PathSep[0])
+		if (i == FileSystem::sc_PathSep[0])
 		{
 			if (!currentSection.empty())
 			{
@@ -65,8 +65,13 @@ FilePath::FilePath(const std::string path)
 		}
 		else
 		{
-			currentSection += path[i];
+			currentSection += i;
 		}
+	}
+	if (!currentSection.empty())
+	{
+		addPathPart(currentSection);
+		currentSection = "";
 	}
 }
 
@@ -94,6 +99,7 @@ std::string FilePath::toString(bool dirOnly)
 	{
 		full_path += m_File;
 	}
+
 	return full_path;
 }
 
@@ -135,9 +141,9 @@ FilePath FilePath::operator+ (const FilePath& rhs)
 
 	FilePath result = *this;
 
-	for (auto it = rhs.m_Folders.cbegin(); it <= rhs.m_Folders.cend(); it++)
+	for (const auto & Folder : rhs.m_Folders)
 	{
-		result.m_Folders.push_back(*it);
+		result.m_Folders.push_back(Folder);
 	}
 
 	result.m_File = rhs.m_File;
