@@ -46,6 +46,22 @@ TEST_CASE("FilePath works as expected", "[FilePath]")
 		REQUIRE(y.size() == 4);
 	}
 
+	SECTION("List constructor works")
+	{
+		FilePath x = { "foo", "bar" };
+		
+		REQUIRE(x.toString() == R"(\foo\bar\)");
+		REQUIRE(FilePath({ "foo", "bar" }).toString() == x.toString());
+	}
+
+	SECTION("toString with & without file works")
+	{
+		FilePath x = R"(\foo\bar\foo.bar)";
+
+		REQUIRE(x.toString(false) == R"(\foo\bar\foo.bar)");
+		REQUIRE(x.toString(true) == R"(\foo\bar\)");
+	}
+
 	SECTION("Operator overloads work")
 	{
 		std::string xString = R"(C:\foo\bar\)";

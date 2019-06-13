@@ -14,7 +14,7 @@ FileSystem::FileSystem()
 {
 	// Directory of the .exe and initial working directory
 	exePath = calculateExecutablePath();
-	exeDirectory = FilePath(exePath.toString(false));
+	exeDirectory = FilePath(exePath.toString(true));
 
 	workingDirectory = exeDirectory;
 }
