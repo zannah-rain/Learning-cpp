@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <cstddef>
 #include "FilePath.h"
 #include "FileSystem.h"
 #include <exception>
@@ -52,7 +53,7 @@ FilePath::FilePath(std::initializer_list<std::string> const pathParts)
 FilePath::FilePath(const std::string path)
 {
 	std::string currentSection = "";
-	for (int i = 0; i != path.size(); ++i)
+	for (std::size_t i = 0; i != path.size(); ++i)
 	{
 		if (path[i] == FileSystem::sc_PathSep[0])
 		{
@@ -84,9 +85,9 @@ std::string FilePath::toString(bool dirOnly)
 	}
 #endif
 
-	for (auto it = m_Folders.begin(); it != m_Folders.end(); ++it)
+	for (auto & Folder : m_Folders)
 	{
-		full_path += *it + FileSystem::sc_PathSep;
+		full_path += Folder + FileSystem::sc_PathSep;
 	}
 
 	if (!dirOnly)
