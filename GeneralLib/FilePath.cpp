@@ -62,6 +62,10 @@ FilePath::FilePath(const std::string path)
 				currentSection = "";
 			}
 		}
+		else
+		{
+			currentSection += path[i];
+		}
 	}
 }
 
