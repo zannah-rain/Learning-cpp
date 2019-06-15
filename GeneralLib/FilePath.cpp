@@ -75,7 +75,7 @@ FilePath::FilePath(const std::string path)
 	}
 }
 
-std::string FilePath::toString(bool dirOnly)
+std::string FilePath::toString(bool dirOnly) const
 {
 	std::string full_path;
 #ifdef _WIN32
@@ -103,28 +103,28 @@ std::string FilePath::toString(bool dirOnly)
 	return full_path;
 }
 
-bool FilePath::isDirectory()
+bool FilePath::isDirectory() const
 {
 	return m_File.empty() && !m_Folders.empty();
 }
 
-bool FilePath::isFile()
+bool FilePath::isFile() const
 {
 	return !m_File.empty();
 }
 
-bool FilePath::isRelative()
+bool FilePath::isRelative() const
 {
 	return m_isRelative;
 }
 
-bool FilePath::empty()
+bool FilePath::empty() const
 {
 	return m_Folders.empty() && m_File.empty();
 }
 
 // Operator overloads
-FilePath FilePath::operator+ (const FilePath& rhs)
+FilePath& FilePath::operator+= (const FilePath& rhs)
 {
 	if (!rhs.m_isRelative)
 	{
@@ -139,19 +139,55 @@ FilePath FilePath::operator+ (const FilePath& rhs)
 		throw std::invalid_argument("Attempted to concatenate a static path with a relative one.");
 	}
 
-	FilePath result = *this;
-
 	for (const auto & Folder : rhs.m_Folders)
 	{
-		result.m_Folders.push_back(Folder);
+		m_Folders.push_back(Folder);
 	}
 
-	result.m_File = rhs.m_File;
+	m_File = rhs.m_File;
 
+	return *this;
+}
+
+FilePath FilePath::operator+ (const FilePath& rhs) const
+{
+	FilePath result = *this;
+	result += rhs;
 	return result;
 }
 
-unsigned int FilePath::size()
+bool FilePath::operator==(const FilePath& rhs) const
+{
+	return toString() == rhs.toString();
+}
+
+bool FilePath::operator!=(const FilePath& rhs) const
+{
+	return !(*this == rhs);
+}
+
+FilePath& FilePath::operator--() //prefix operator
+{
+	assert(!empty()); // Can't decrement an already empty FilePath
+	if (!m_File.empty())
+	{
+		m_File = "";
+	}
+	else if (!m_Folders.empty())
+	{
+		m_Folders.pop_back();
+	}
+	return *this;
+}
+
+FilePath FilePath::operator--(int) //postfix operator
+{
+	FilePath currentPath = *this; // Create a copy of the current FilePath
+	--*this; // Decrement it in place
+	return currentPath; // Return the original copy for use in the original expression
+}
+
+unsigned int FilePath::size() const
 {
 	return m_Folders.size() + !m_File.empty();
 }

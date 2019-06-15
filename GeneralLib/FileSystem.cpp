@@ -19,12 +19,12 @@ FileSystem::FileSystem()
 	workingDirectory = exeDirectory;
 }
 
-FilePath FileSystem::wdRelativePath(std::initializer_list<std::string> const path_parts)
+FilePath FileSystem::wdRelativePath(std::initializer_list<std::string> const path_parts) const
 {
 	return workingDirectory + FilePath(path_parts);
 }
 
-FilePath FileSystem::exeRelativePath(std::initializer_list<std::string> const path_parts)
+FilePath FileSystem::exeRelativePath(std::initializer_list<std::string> const path_parts) const
 {
 	return exeDirectory + FilePath(path_parts);
 }
@@ -56,12 +56,12 @@ FilePath FileSystem::calculateExecutablePath()
 	return x;
 }
 
-FilePath FileSystem::getExePath()
+FilePath FileSystem::getExePath() const
 {
 	return exePath;
 }
 
-FilePath FileSystem::getExeDirectory()
+FilePath FileSystem::getExeDirectory() const
 {
 	return exeDirectory;
 }

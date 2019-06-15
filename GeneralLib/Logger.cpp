@@ -7,7 +7,7 @@ Logger::Logger(int const initialLevel)
 	printLevel = initialLevel;
 }
 
-void Logger::log(std::string const message, int const level)
+void Logger::log(std::string const message, int const level) const
 {
 	if (level >= printLevel)
 	{

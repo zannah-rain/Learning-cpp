@@ -62,7 +62,7 @@ TEST_CASE("FilePath works as expected", "[FilePath]")
 		REQUIRE(x.toString(true) == R"(\foo\bar\)");
 	}
 
-	SECTION("Operator overloads work")
+	SECTION("Operator+ overload works")
 	{
 		std::string xString = R"(C:\foo\bar\)";
 		std::string yString = R"(foo\bar\foo.txt)";
@@ -78,5 +78,17 @@ TEST_CASE("FilePath works as expected", "[FilePath]")
 		REQUIRE(x.isFile() == y.isFile());
 		REQUIRE(x.isDirectory() == y.isDirectory());
 		REQUIRE(x.size() == y.size());
+	}
+
+	SECTION("operator-- overloads work")
+	{
+		FilePath x = R"(\foo\bar.txt)";
+		FilePath xCopy = x;
+		FilePath y = R"(\foo\)";
+
+		REQUIRE(x-- == xCopy);
+		REQUIRE(x != xCopy);
+		REQUIRE(x == y);
+		REQUIRE(--xCopy == y);
 	}
 }

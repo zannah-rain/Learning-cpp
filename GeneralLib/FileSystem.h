@@ -37,7 +37,7 @@ public:
 	 * @param path_parts A list of extra strings to add to the path. Typically with one entry representing one folder / file.
 	 * @return A FilePath with path_parts appended to the workingDirectory
 	 */
-	FilePath wdRelativePath(std::initializer_list<std::string> const path_parts);
+	FilePath wdRelativePath(std::initializer_list<std::string> const path_parts) const;
 
 	/**
 	 * Starting from the exeDirectory, add additional bits of file paths
@@ -45,15 +45,15 @@ public:
 	 * @param path_parts A list of extra strings to add to the path. Typically with one entry representing one folder / file.
 	 * @return A FilePath with path_parts appended to the exeDirectory
 	 */
-	FilePath exeRelativePath(std::initializer_list<std::string> const path_parts);
+	FilePath exeRelativePath(std::initializer_list<std::string> const path_parts) const;
 
 	/**
 	 * Just provides public read-only access to exePath
 	 */
-	FilePath getExePath();
+	FilePath getExePath() const;
 
 	/**
 	 * Just provides public read-only access to exeDirectory
 	 */
-	FilePath getExeDirectory();
+	FilePath getExeDirectory() const;
 };
