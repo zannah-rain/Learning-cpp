@@ -105,12 +105,12 @@ std::string FilePath::toString(bool dirOnly)
 
 bool FilePath::isDirectory()
 {
-	return m_File.empty();
+	return m_File.empty() && !m_Folders.empty();
 }
 
 bool FilePath::isFile()
 {
-	return !isDirectory();
+	return !m_File.empty();
 }
 
 bool FilePath::isRelative()
