@@ -19,6 +19,24 @@ set_property (GLOBAL PROPERTY USE_FOLDERS ON)
 
 
 
+# UNIT TEST INTEGRATION
+
+# A target for running the test executable
+add_custom_target(GeneralLibTests_run
+	COMMAND GeneralLibTests
+	WORKING_DIRECTORY ${CMAKE_CURRENT_BUILD_DIR}
+	COMMENT "running unit tests in ${CMAKE_CURRENT_BUILD_DIR}"
+)
+
+# Running the test executable should only happen after the test exe is built & the library is built
+add_dependencies(GeneralLibTests_run GeneralLibTests)
+add_dependencies(GeneralLibTests_run GeneralLib)
+
+# Building the final .exe should only happen if all tests pass
+add_dependencies(SDLExample3 GeneralLibTests_run)
+
+
+
 
 
 # Set up Doxygen
