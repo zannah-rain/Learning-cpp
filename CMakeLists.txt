@@ -4,6 +4,9 @@ cmake_minimum_required (VERSION 2.8.11)
 # Define overall project name
 project (PersonalStuff)
 
+# Remove some project spam from IDEs (needs to be set before any target definitions)
+set_property (GLOBAL PROPERTY USE_FOLDERS ON)
+
 # Put built objects all in the same folder so they can be run easily
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build/bin)
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build/lib)
@@ -14,8 +17,7 @@ add_subdirectory (GeneralLibTests)
 add_subdirectory (SDLExample3)
 add_subdirectory (SDL2-2.0.9 EXCLUDE_FROM_ALL)
 
-# Remove some project spam from IDEs
-set_property (GLOBAL PROPERTY USE_FOLDERS ON)
+
 
 
 
@@ -59,6 +61,14 @@ if (DOXYGEN_FOUND)
 else (DOXYGEN_FOUND)
     message("Doxygen need to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
+
+
+
+# Organise stuff in IDEs even more!
+set_target_properties (SDL2 doc_doxygen GeneralLibTests_run PROPERTIES
+	FOLDER Background
+)
+
 
 
 
