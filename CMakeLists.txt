@@ -41,6 +41,14 @@ add_dependencies(SDLExample3 GeneralLibTests_run)
 
 
 
+# Copy the resources folder to build/resources if unit testing is successful
+add_custom_command(TARGET GeneralLibTests_run POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_SOURCE_DIR}/resources ${CMAKE_CURRENT_BINARY_DIR}/build/resources/
+)
+
+
+
 
 
 # Set up Doxygen
