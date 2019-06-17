@@ -12,6 +12,10 @@ int main(int argc, char* argv[])
 {
 	Logger logger;
 	FileSystem fileSystem;
+	SDL_Event event;
+
+	const int SCREEN_WIDTH = 640;
+	const int SCREEN_HEIGHT = 480;
 	
 	logger.log("Program started");
 
@@ -25,7 +29,7 @@ int main(int argc, char* argv[])
 	{
 		logger.log("SDL initialised");
 	}
-
+	
 	logger.log("Initial working directory: " + fileSystem.workingDirectory.toString());
 	logger.log("Executable directory: " + fileSystem.getExeDirectory().toString());
 	fileSystem.workingDirectory--; // Set workingDirectory to the project folder, we aren't going to look for files in /bin/ very often
@@ -35,7 +39,7 @@ int main(int argc, char* argv[])
 
 	// We're going to store the pointer to the window in a unique_ptr
 	// We need to tell it the class of the thing it points to and the class of the destructor
-	std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> win(SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_SHOWN), &SDL_DestroyWindow);
+	std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> win(SDL_CreateWindow("Hello World!", 100, 100, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN), &SDL_DestroyWindow);
 	if (win == nullptr) 
 	{
 		logger.log({ "SDL_CreateWindow Error: " , SDL_GetError() });
@@ -89,6 +93,46 @@ int main(int argc, char* argv[])
 		SDL_RenderPresent(ren.get());
 		//Take a quick break after all that hard work
 		SDL_Delay(1000);
+	}
+
+	// Game loop
+	bool quit = false;
+	while (!quit)
+	{
+		// Handle key presses
+		while (SDL_PollEvent(&event))
+		{
+			switch (event.type)
+			{
+			case SDL_KEYDOWN:
+				logger.log("Key press");
+				switch (event.key.keysym.sym)
+				{
+				case SDLK_q:
+					break;
+				case SDLK_LEFT:
+					break;
+				}
+				break;
+			case SDL_KEYUP:
+				logger.log("Key release");
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				switch (event.button.button)
+				{
+				case SDL_BUTTON_LEFT:
+					break;
+				case SDL_BUTTON_RIGHT:
+					break;
+				case SDL_BUTTON_MIDDLE:
+					break;
+				}
+				break;
+			case SDL_QUIT:
+				quit = true;
+				break;
+			}
+		}
 	}
 
 	// Cleanup before closing
