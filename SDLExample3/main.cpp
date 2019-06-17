@@ -1,5 +1,7 @@
 #include "SDL.h"
 #undef main
+
+#include <memory>
 #include <string>
 #include <iostream>
 #include "Logger.h"
@@ -8,6 +10,7 @@
 int main(int argc, char* argv[])
 {
 	Logger logger;
+	FileSystem fileSystem;
 	
 	logger.log("Program started");
 
@@ -22,8 +25,6 @@ int main(int argc, char* argv[])
 		logger.log("SDL initialised");
 	}
 
-	FileSystem fileSystem;
-
 	// Check we've calculated the workingDirectory properly
 	if (fileSystem.workingDirectory.empty())
 	{
@@ -33,12 +34,17 @@ int main(int argc, char* argv[])
 	}
 	else 
 	{
-		logger.log("Working directory: " + fileSystem.workingDirectory.toString());
+		logger.log("Initial working directory: " + fileSystem.workingDirectory.toString());
 		logger.log("Executable directory: " + fileSystem.getExeDirectory().toString());
+		fileSystem.workingDirectory--; // Set workingDirectory to the project folder, we aren't going to look for files in /bin/ very often
+		logger.log("New working directory: " + fileSystem.workingDirectory.toString());
 	}
 
 	// Open a window
-	SDL_Window *win = SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
+
+	// We're going to store the pointer to the window in a unique_ptr
+	// We need to tell it the class of the thing it points to and the class of the destructor
+	std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> win(SDL_CreateWindow("Hello World!", 100, 100, 640, 480, SDL_WINDOW_SHOWN), &SDL_DestroyWindow);
 	if (win == nullptr) 
 	{
 		std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
@@ -51,10 +57,10 @@ int main(int argc, char* argv[])
 	}
 
 	// Create a renderer
-	SDL_Renderer *ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> ren(SDL_CreateRenderer(win.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC), &SDL_DestroyRenderer);
 	if (ren == nullptr) 
 	{
-		SDL_DestroyWindow(win);
+		//SDL_DestroyWindow(win.get());
 		std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
 		SDL_Quit();
 		return 4;
@@ -65,19 +71,38 @@ int main(int argc, char* argv[])
 	}
 
 	// Load a .bmp
-	FilePath imagePath = fileSystem.wdRelativePath({ "Lesson1", "hello.bmp" });
+	FilePath imagePath = fileSystem.wdRelativePath({ "resources", "roguelikeSheet_magenta.bmp" });
 	std::cout << imagePath.toString() << std::endl;
-//	SDL_Surface *bmp = SDL_LoadBMP(imagePath.c_str());
-//	if (bmp == nullptr) {
-//		SDL_DestroyRenderer(ren);
-//		SDL_DestroyWindow(win);
-//		std::cout << "SDL_LoadBMP Error: " << SDL_GetError() << std::endl;
-//		SDL_Quit();
-//		return 1;
-//	}
+	std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> bmp(SDL_LoadBMP(imagePath.toString().c_str()), &SDL_FreeSurface);
+	if (bmp == nullptr) {
+		std::cout << "SDL_LoadBMP Error: " << SDL_GetError() << std::endl;
+		SDL_Quit();
+		return 1;
+	}
+
+	// Convert it to a texture
+	std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> tex(SDL_CreateTextureFromSurface(ren.get(), bmp.get()), &SDL_DestroyTexture);
+	bmp.reset();
+	if (tex == nullptr) {
+		std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
+		SDL_Quit();
+		return 1;
+	}
+	
+	//A sleepy rendering loop, wait for 3 seconds and render and present the screen each time
+	for (int i = 0; i < 3; ++i) {
+		//First clear the renderer
+		SDL_RenderClear(ren.get());
+		//Draw the texture
+		SDL_RenderCopy(ren.get(), tex.get(), NULL, NULL);
+		//Update the screen
+		SDL_RenderPresent(ren.get());
+		//Take a quick break after all that hard work
+		SDL_Delay(1000);
+	}
 
 	// Cleanup before closing
-	SDL_DestroyWindow(win);
+	//SDL_DestroyWindow(win.get());
 	logger.log("Window destroyed.");
 	SDL_Quit();
 	logger.log("SDL quit.");
