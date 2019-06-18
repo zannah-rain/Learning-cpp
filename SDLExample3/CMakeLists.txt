@@ -2,7 +2,7 @@
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:CONSOLE /ENTRY:mainCRTStartup")
 
 # Create a .exe
-add_executable(SDLExample3 main.cpp)
+add_executable(SDLExample3 main.cpp Quit.cpp Quit.h)
 
 # It depends on the .dll made in a previous project
 target_link_libraries(SDLExample3 GeneralLib)
