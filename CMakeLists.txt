@@ -18,6 +18,8 @@ add_subdirectory (GeneralLib)
 add_subdirectory (GeneralLibTests)
 add_subdirectory (SDLExample3)
 add_subdirectory (SDL2-2.0.9 EXCLUDE_FROM_ALL)
+add_subdirectory (glfw-3.3 EXCLUDE_FROM_ALL)
+add_subdirectory (learnopengl)
 
 
 
@@ -75,7 +77,7 @@ endif (DOXYGEN_FOUND)
 
 
 # Organise stuff in IDEs even more!
-set_target_properties (SDL2 doc_doxygen GeneralLibTests_run PROPERTIES
+set_target_properties (SDL2 doc_doxygen GeneralLibTests_run glfw PROPERTIES
 	FOLDER Background
 )
 
