@@ -38,9 +38,6 @@ add_custom_target(GeneralLibTests_run
 add_dependencies(GeneralLibTests_run GeneralLibTests)
 add_dependencies(GeneralLibTests_run GeneralLib)
 
-# Building the final .exe should only happen if all tests pass
-add_dependencies(SDLExample3 GeneralLibTests_run)
-
 
 
 # Copy the resources folder to build/resources if unit testing is successful
