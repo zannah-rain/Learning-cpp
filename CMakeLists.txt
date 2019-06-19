@@ -38,13 +38,20 @@ add_custom_target(GeneralLibTests_run
 add_dependencies(GeneralLibTests_run GeneralLibTests)
 add_dependencies(GeneralLibTests_run GeneralLib)
 
+# Building further projects should only happen if unit tests are passing
+add_dependencies(SDLExample3 GeneralLibTests_run)
+add_dependencies(learnopengl GeneralLibTests_run)
+
 
 
 # Copy the resources folder to build/resources if unit testing is successful
-add_custom_command(TARGET GeneralLibTests_run POST_BUILD
+add_custom_target(CopyResources
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
 	${CMAKE_SOURCE_DIR}/resources ${CMAKE_CURRENT_BINARY_DIR}/build/resources/
 )
+
+# SDLExample3 needs those resources
+add_dependencies(SDLExample3 CopyResources)
 
 
 
@@ -74,7 +81,7 @@ endif (DOXYGEN_FOUND)
 
 
 # Organise stuff in IDEs even more!
-set_target_properties (SDL2 doc_doxygen GeneralLibTests_run glfw PROPERTIES
+set_target_properties (SDL2 doc_doxygen GeneralLibTests_run glfw CopyResources PROPERTIES
 	FOLDER Background
 )
 
@@ -83,4 +90,4 @@ set_target_properties (SDL2 doc_doxygen GeneralLibTests_run glfw PROPERTIES
 
 # VS specific stuff
 # Set the actual program as the startup project (what gets run on F5)
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SDLExample3)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT learnopengl)
