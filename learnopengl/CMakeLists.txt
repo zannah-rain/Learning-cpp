@@ -20,6 +20,7 @@ target_link_libraries(learnopengl GeneralLib)
 
 # Also it depends on GLFW
 target_link_libraries(learnopengl glfw)
+include_directories("../glfw-3.3/include/GLFW/")
 
 # And also on opengl
 include_directories(${OPENGL_INCLUDE_DIR})
