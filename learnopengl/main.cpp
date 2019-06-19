@@ -3,6 +3,7 @@
 #include <iostream>
 #include "FileSystem.h"
 #include "Logger.h"
+#include <glad/glad.h>
 
 int main(int argc, char* argv[])
 {
