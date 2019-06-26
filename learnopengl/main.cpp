@@ -66,41 +66,55 @@ int main(int argc, char* argv[])
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
 	// Create a Vertex Array Object to store a bunch of configurations
-	unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
+	unsigned int VAO[2];
+	glGenVertexArrays(2, VAO);
 
-	glBindVertexArray(VAO); // Assign vertex options to this array
+	glBindVertexArray(VAO[0]); // Assign vertex options to this array
 
 	// Create our Vertex Buffer Object, to pass vertices to the GPU
-	unsigned int VBO;
-	glGenBuffers(1, &VBO); // Creates a bunch of buffers
+	unsigned int VBO[2];
+	glGenBuffers(2, VBO); // Creates a bunch of buffers
 	
-	// Create an Element Buffer Object, which can make use of passed vertices more than once!
-	unsigned int EBO;
-	glGenBuffers(1, &EBO);
-
 	// Bind the Vertex Buffer Object before passing vertices!
-	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Specify that VBO should be an array buffer (for vertices)
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]); // Specify that VBO should be an array buffer (for vertices)
 	// Define vertices of two triangles in the CPU!
 	float vertices[] = {
 	 0.5f,  0.5f, 0.0f,  // top right
 	 0.5f, -0.5f, 0.0f,  // bottom right
+	-0.5f, -0.5f, 0.0f   // bottom left
+	};
+	// Send them to the GPU!
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	// Tell openGL how to translate our values to its own stuff
+	glVertexAttribPointer(
+		0, // Which vertex attribute we want to configure, we used location = 0 in the shader
+		3, // The size of the vertex attribute, we used vec3 in the shader
+		GL_FLOAT, // The type of the data
+		GL_FALSE, // Do we want the data to be normalized
+		3 * sizeof(float), // The distance between each set of vertex attributes
+		(void*)0 // The offset of where the position data begins in the buffer
+	);
+	glEnableVertexAttribArray(0);
+
+	glBindVertexArray(VAO[1]); // Assign vertex options to this array
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+	float vertices2[] = {
 	-0.5f, -0.5f, 0.0f,  // bottom left
 	-0.5f,  0.5f, 0.0f,  // top left 
 	 1.0f, -0.5f, 0.0f   // far right bottom
 	};
 	// Send them to the GPU!
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	// Bind the Element Array Buffer before sending indices!
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	// Define indices of the previously defined vertices which we will use to create new triangles :)
-	unsigned int indices[] = {  // note that we start from 0!
-		0, 1, 3,   // first triangle
-		1, 2, 3    // second triangle
-	};
-	// Send the indices to the array buffer on the GPU!
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+	// Tell openGL how to translate our values to its own stuff
+	glVertexAttribPointer(
+		0, // Which vertex attribute we want to configure, we used location = 0 in the shader
+		3, // The size of the vertex attribute, we used vec3 in the shader
+		GL_FLOAT, // The type of the data
+		GL_FALSE, // Do we want the data to be normalized
+		3 * sizeof(float), // The distance between each set of vertex attributes
+		(void*)0 // The offset of where the position data begins in the buffer
+	);
+	glEnableVertexAttribArray(0);
 
 	// Create our vertex shader & compile it
 	unsigned int vertexShader;
@@ -161,17 +175,6 @@ int main(int argc, char* argv[])
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-	// Tell openGL how to translate our values to its own stuff
-	glVertexAttribPointer(
-		0, // Which vertex attribute we want to configure, we used location = 0 in the shader
-		3, // The size of the vertex attribute, we used vec3 in the shader
-		GL_FLOAT, // The type of the data
-		GL_FALSE, // Do we want the data to be normalized
-		3 * sizeof(float), // The distance between each set of vertex attributes
-		(void*)0 // The offset of where the position data begins in the buffer
-	);
-	glEnableVertexAttribArray(0);
-
 	// Render loop
 	while (!glfwWindowShouldClose(window.get()))
 	{
@@ -182,9 +185,10 @@ int main(int argc, char* argv[])
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
-		glBindVertexArray(VAO);
+		glBindVertexArray(VAO[0]);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawArrays(GL_TRIANGLES, 2, 3);
+		glBindVertexArray(VAO[1]);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
 
 		// We have one buffer for drawing to and one to send to the screen
