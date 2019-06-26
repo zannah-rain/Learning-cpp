@@ -144,13 +144,23 @@ int main(int argc, char* argv[])
 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
 	glCompileShader(fragmentShader);
 
+	unsigned int redFragmentShader;
+	redFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(redFragmentShader, 1, &redFragmentShaderSource, NULL);
+	glCompileShader(redFragmentShader);
+
 	// Create our shader program, which links all our shaders together
-	unsigned int shaderProgram;
+	unsigned int shaderProgram, redShaderProgram;
 	shaderProgram = glCreateProgram();
 	// Link it to the shaders we've made
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram); // Make the program!
+
+	redShaderProgram = glCreateProgram();
+	glAttachShader(redShaderProgram, vertexShader);
+	glAttachShader(redShaderProgram, redFragmentShader);
+	glLinkProgram(redShaderProgram);
 
 	// Check the program was creates successfully
 	{
@@ -166,14 +176,23 @@ int main(int argc, char* argv[])
 			glfwTerminate();
 			return 4;
 		}
-	}
 
-	// Set shaderProgram as the program to use for future drawing commands
-	glUseProgram(shaderProgram);
+		glGetProgramiv(redShaderProgram, GL_LINK_STATUS, &success);
+
+		if (!success)
+		{
+			glGetProgramInfoLog(redShaderProgram, 512, NULL, infoLog);
+			logger.log("ERROR::PROGRAM::LINKING_FAILED");
+			logger.log(infoLog);
+			glfwTerminate();
+			return 4;
+		}
+	}
 
 	// Once the shaders have been linked in to a program, we no longer need them
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+	glDeleteShader(redFragmentShader);
 
 	// Render loop
 	while (!glfwWindowShouldClose(window.get()))
@@ -187,6 +206,7 @@ int main(int argc, char* argv[])
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO[0]);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glUseProgram(redShaderProgram);
 		glBindVertexArray(VAO[1]);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
