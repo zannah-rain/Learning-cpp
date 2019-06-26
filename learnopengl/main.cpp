@@ -86,7 +86,8 @@ int main(int argc, char* argv[])
 	 0.5f,  0.5f, 0.0f,  // top right
 	 0.5f, -0.5f, 0.0f,  // bottom right
 	-0.5f, -0.5f, 0.0f,  // bottom left
-	-0.5f,  0.5f, 0.0f   // top left 
+	-0.5f,  0.5f, 0.0f,  // top left 
+	 1.0f, -0.5f, 0.0f   // far right bottom
 	};
 	// Send them to the GPU!
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -182,7 +183,8 @@ int main(int argc, char* argv[])
 
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 2, 3);
 		glBindVertexArray(0);
 
 		// We have one buffer for drawing to and one to send to the screen
