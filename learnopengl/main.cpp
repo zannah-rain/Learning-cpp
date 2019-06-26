@@ -79,22 +79,34 @@ int main(int argc, char* argv[])
 	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Specify that VBO should be an array buffer (for vertices)
 	// Define vertices of two triangles in the CPU!
 	float vertices[] = {
-	 0.5f,  0.5f, 0.0f,  // top right
-	 0.5f, -0.5f, 0.0f,  // bottom right
-	-0.5f, -0.5f, 0.0f   // bottom left
+	// positions		// colours
+	 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+	 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+	-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
 	};
 	// Send them to the GPU!
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	// Tell openGL how to translate our values to its own stuff
+	// Tell openGL how to translate our positional values to its own stuff
 	glVertexAttribPointer(
 		0, // Which vertex attribute we want to configure, we used location = 0 in the shader
 		3, // The size of the vertex attribute, we used vec3 in the shader
 		GL_FLOAT, // The type of the data
 		GL_FALSE, // Do we want the data to be normalized
-		3 * sizeof(float), // The distance between each set of vertex attributes
+		6 * sizeof(float), // The distance between each set of vertex attributes
 		(void*)0 // The offset of where the position data begins in the buffer
 	);
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(0); // Enable position attribute
+
+	// Tell openGL how to translate our colour to its own stuff
+	glVertexAttribPointer(
+		1, // Which vertex attribute we want to configure, we used location = 0 in the shader
+		3, // The size of the vertex attribute, we used vec3 in the shader
+		GL_FLOAT, // The type of the data
+		GL_FALSE, // Do we want the data to be normalized
+		6 * sizeof(float), // The distance between each set of vertex attributes
+		(void*)(3*sizeof(float)) // The offset of where the position data begins in the buffer
+	);
+	glEnableVertexAttribArray(1); // Enable color attribute
 
 	// Create our vertex shader & compile it
 	unsigned int vertexShader;
@@ -163,13 +175,6 @@ int main(int argc, char* argv[])
 	{
 		// Process inputs since last frame
 		processInput(window.get());
-
-		// Update the ourColor uniform
-		float timeValue = glfwGetTime();
-		float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
-		int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-		glUseProgram(shaderProgram);
-		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
 		// Render stuff
 		glClear(GL_COLOR_BUFFER_BIT);
