@@ -66,17 +66,17 @@ int main(int argc, char* argv[])
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
 	// Create a Vertex Array Object to store a bunch of configurations
-	unsigned int VAO[2];
-	glGenVertexArrays(2, VAO);
+	unsigned int VAO;
+	glGenVertexArrays(1, &VAO);
 
-	glBindVertexArray(VAO[0]); // Assign vertex options to this array
+	glBindVertexArray(VAO); // Assign vertex options to this array
 
 	// Create our Vertex Buffer Object, to pass vertices to the GPU
-	unsigned int VBO[2];
-	glGenBuffers(2, VBO); // Creates a bunch of buffers
+	unsigned int VBO;
+	glGenBuffers(1, &VBO); // Creates a bunch of buffers
 	
 	// Bind the Vertex Buffer Object before passing vertices!
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]); // Specify that VBO should be an array buffer (for vertices)
+	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Specify that VBO should be an array buffer (for vertices)
 	// Define vertices of two triangles in the CPU!
 	float vertices[] = {
 	 0.5f,  0.5f, 0.0f,  // top right
@@ -96,30 +96,13 @@ int main(int argc, char* argv[])
 	);
 	glEnableVertexAttribArray(0);
 
-	glBindVertexArray(VAO[1]); // Assign vertex options to this array
-	glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-	float vertices2[] = {
-	-0.5f, -0.5f, 0.0f,  // bottom left
-	-0.5f,  0.5f, 0.0f,  // top left 
-	 1.0f, -0.5f, 0.0f   // far right bottom
-	};
-	// Send them to the GPU!
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
-	// Tell openGL how to translate our values to its own stuff
-	glVertexAttribPointer(
-		0, // Which vertex attribute we want to configure, we used location = 0 in the shader
-		3, // The size of the vertex attribute, we used vec3 in the shader
-		GL_FLOAT, // The type of the data
-		GL_FALSE, // Do we want the data to be normalized
-		3 * sizeof(float), // The distance between each set of vertex attributes
-		(void*)0 // The offset of where the position data begins in the buffer
-	);
-	glEnableVertexAttribArray(0);
-
 	// Create our vertex shader & compile it
 	unsigned int vertexShader;
 	vertexShader = glCreateShader(GL_VERTEX_SHADER); // Create it
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL); //See vertexShaderExample.h
+	char * rgbaVertexShaderSource =
+		#include "rgbaVertexShader.h"
+	;
+	glShaderSource(vertexShader, 1, &rgbaVertexShaderSource, NULL); //See vertexShaderExample.h
 	glCompileShader(vertexShader);
 
 	// Check if compilation was successful
@@ -141,26 +124,19 @@ int main(int argc, char* argv[])
 	// Create our fragment shader & compile it too!
 	unsigned int fragmentShader;
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	char * rgbaFragmentShaderSource =
+		#include "rgbaFragmentShader.h"
+	;
+	glShaderSource(fragmentShader, 1, &rgbaFragmentShaderSource, NULL);
 	glCompileShader(fragmentShader);
 
-	unsigned int redFragmentShader;
-	redFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(redFragmentShader, 1, &redFragmentShaderSource, NULL);
-	glCompileShader(redFragmentShader);
-
 	// Create our shader program, which links all our shaders together
-	unsigned int shaderProgram, redShaderProgram;
+	unsigned int shaderProgram;
 	shaderProgram = glCreateProgram();
 	// Link it to the shaders we've made
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram); // Make the program!
-
-	redShaderProgram = glCreateProgram();
-	glAttachShader(redShaderProgram, vertexShader);
-	glAttachShader(redShaderProgram, redFragmentShader);
-	glLinkProgram(redShaderProgram);
 
 	// Check the program was creates successfully
 	{
@@ -176,23 +152,11 @@ int main(int argc, char* argv[])
 			glfwTerminate();
 			return 4;
 		}
-
-		glGetProgramiv(redShaderProgram, GL_LINK_STATUS, &success);
-
-		if (!success)
-		{
-			glGetProgramInfoLog(redShaderProgram, 512, NULL, infoLog);
-			logger.log("ERROR::PROGRAM::LINKING_FAILED");
-			logger.log(infoLog);
-			glfwTerminate();
-			return 4;
-		}
 	}
 
 	// Once the shaders have been linked in to a program, we no longer need them
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
-	glDeleteShader(redFragmentShader);
 
 	// Render loop
 	while (!glfwWindowShouldClose(window.get()))
@@ -204,10 +168,7 @@ int main(int argc, char* argv[])
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
-		glBindVertexArray(VAO[0]);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glUseProgram(redShaderProgram);
-		glBindVertexArray(VAO[1]);
+		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
 
