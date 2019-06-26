@@ -74,17 +74,32 @@ int main(int argc, char* argv[])
 	// Create our Vertex Buffer Object, to pass vertices to the GPU
 	unsigned int VBO;
 	glGenBuffers(1, &VBO); // Creates a bunch of buffers
+	
+	// Create an Element Buffer Object, which can make use of passed vertices more than once!
+	unsigned int EBO;
+	glGenBuffers(1, &EBO);
+
+	// Bind the Vertex Buffer Object before passing vertices!
 	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Specify that VBO should be an array buffer (for vertices)
-
-	// Define vertices of a triangle in the CPU
+	// Define vertices of two triangles in the CPU!
 	float vertices[] = {
-		-0.5f, -0.5f, 0.0f,
-		 0.5f, -0.5f, 0.0f,
-		 0.0f,  0.5f, 0.0f
+	 0.5f,  0.5f, 0.0f,  // top right
+	 0.5f, -0.5f, 0.0f,  // bottom right
+	-0.5f, -0.5f, 0.0f,  // bottom left
+	-0.5f,  0.5f, 0.0f   // top left 
 	};
-
 	// Send them to the GPU!
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	// Bind the Element Array Buffer before sending indices!
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	// Define indices of the previously defined vertices which we will use to create new triangles :)
+	unsigned int indices[] = {  // note that we start from 0!
+		0, 1, 3,   // first triangle
+		1, 2, 3    // second triangle
+	};
+	// Send the indices to the array buffer on the GPU!
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// Create our vertex shader & compile it
 	unsigned int vertexShader;
@@ -165,7 +180,10 @@ int main(int argc, char* argv[])
 		// Render stuff
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glUseProgram(shaderProgram);
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 
 		// We have one buffer for drawing to and one to send to the screen
 		glfwSwapBuffers(window.get());
