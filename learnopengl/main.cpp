@@ -4,6 +4,7 @@
 // GLAD MUST BE INCLUDED BEFORE glfw
 #include "glad/glad.h"
 #include "glfw3.h"
+#include "vertexShaderExample.h"
 
 // A callback function we'll use for changing the openGL viewport size
 void framebuffer_size_callback(GLFWwindow * window, int height, int width);
@@ -64,6 +65,97 @@ int main(int argc, char* argv[])
 	// Set the "clear" color we'll overwrite previous frames with before drawing
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
+	// Create a Vertex Array Object to store a bunch of configurations
+	unsigned int VAO;
+	glGenVertexArrays(1, &VAO);
+
+	glBindVertexArray(VAO); // Assign vertex options to this array
+
+	// Create our Vertex Buffer Object, to pass vertices to the GPU
+	unsigned int VBO;
+	glGenBuffers(1, &VBO); // Creates a bunch of buffers
+	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Specify that VBO should be an array buffer (for vertices)
+
+	// Define vertices of a triangle in the CPU
+	float vertices[] = {
+		-0.5f, -0.5f, 0.0f,
+		 0.5f, -0.5f, 0.0f,
+		 0.0f,  0.5f, 0.0f
+	};
+
+	// Send them to the GPU!
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	// Create our vertex shader & compile it
+	unsigned int vertexShader;
+	vertexShader = glCreateShader(GL_VERTEX_SHADER); // Create it
+	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL); //See vertexShaderExample.h
+	glCompileShader(vertexShader);
+
+	// Check if compilation was successful
+	{
+		int success;
+		char infoLog[512];
+		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+
+		if (!success)
+		{
+			glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+			logger.log("ERROR::SHADER::VERTEX::COMPILATION_FAILED");
+			logger.log(infoLog);
+			glfwTerminate();
+			return 3;
+		}
+	}
+
+	// Create our fragment shader & compile it too!
+	unsigned int fragmentShader;
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	glCompileShader(fragmentShader);
+
+	// Create our shader program, which links all our shaders together
+	unsigned int shaderProgram;
+	shaderProgram = glCreateProgram();
+	// Link it to the shaders we've made
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram); // Make the program!
+
+	// Check the program was creates successfully
+	{
+		int success;
+		char infoLog[512];
+		glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+
+		if (!success)
+		{
+			glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+			logger.log("ERROR::PROGRAM::LINKING_FAILED");
+			logger.log(infoLog);
+			glfwTerminate();
+			return 4;
+		}
+	}
+
+	// Set shaderProgram as the program to use for future drawing commands
+	glUseProgram(shaderProgram);
+
+	// Once the shaders have been linked in to a program, we no longer need them
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
+	// Tell openGL how to translate our values to its own stuff
+	glVertexAttribPointer(
+		0, // Which vertex attribute we want to configure, we used location = 0 in the shader
+		3, // The size of the vertex attribute, we used vec3 in the shader
+		GL_FLOAT, // The type of the data
+		GL_FALSE, // Do we want the data to be normalized
+		3 * sizeof(float), // The distance between each set of vertex attributes
+		(void*)0 // The offset of where the position data begins in the buffer
+	);
+	glEnableVertexAttribArray(0);
+
 	// Render loop
 	while (!glfwWindowShouldClose(window.get()))
 	{
@@ -72,6 +164,8 @@ int main(int argc, char* argv[])
 
 		// Render stuff
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		// We have one buffer for drawing to and one to send to the screen
 		glfwSwapBuffers(window.get());
