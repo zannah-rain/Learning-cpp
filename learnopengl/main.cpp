@@ -4,7 +4,6 @@
 // GLAD MUST BE INCLUDED BEFORE glfw
 #include "glad/glad.h"
 #include "glfw3.h"
-#include "vertexShaderExample.h"
 #include "Shader.h"
 
 // A callback function we'll use for changing the openGL viewport size
