@@ -52,6 +52,7 @@ add_custom_target(CopyResources
 
 # SDLExample3 needs those resources
 add_dependencies(SDLExample3 CopyResources)
+add_dependencies(learnopengl CopyResources)
 
 
 

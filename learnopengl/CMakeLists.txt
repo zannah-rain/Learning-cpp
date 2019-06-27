@@ -13,7 +13,7 @@ else (OPENGL_FOUND)
 endif()
 
 # Create a .exe
-add_executable(learnopengl main.cpp glad.c vertexShaderExample.h)
+add_executable(learnopengl main.cpp glad.c Shader.h Shader.cpp)
 
 # It depends on the .dll made in a previous project
 target_link_libraries(learnopengl GeneralLib)

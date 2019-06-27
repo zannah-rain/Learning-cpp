@@ -5,6 +5,7 @@
 #include "glad/glad.h"
 #include "glfw3.h"
 #include "vertexShaderExample.h"
+#include "Shader.h"
 
 // A callback function we'll use for changing the openGL viewport size
 void framebuffer_size_callback(GLFWwindow * window, int height, int width);
@@ -108,67 +109,8 @@ int main(int argc, char* argv[])
 	);
 	glEnableVertexAttribArray(1); // Enable color attribute
 
-	// Create our vertex shader & compile it
-	unsigned int vertexShader;
-	vertexShader = glCreateShader(GL_VERTEX_SHADER); // Create it
-	char * rgbaVertexShaderSource =
-		#include "rgbaVertexShader.h"
-	;
-	glShaderSource(vertexShader, 1, &rgbaVertexShaderSource, NULL); //See vertexShaderExample.h
-	glCompileShader(vertexShader);
-
-	// Check if compilation was successful
-	{
-		int success;
-		char infoLog[512];
-		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-
-		if (!success)
-		{
-			glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-			logger.log("ERROR::SHADER::VERTEX::COMPILATION_FAILED");
-			logger.log(infoLog);
-			glfwTerminate();
-			return 3;
-		}
-	}
-
-	// Create our fragment shader & compile it too!
-	unsigned int fragmentShader;
-	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	char * rgbaFragmentShaderSource =
-		#include "rgbaFragmentShader.h"
-	;
-	glShaderSource(fragmentShader, 1, &rgbaFragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
-
-	// Create our shader program, which links all our shaders together
-	unsigned int shaderProgram;
-	shaderProgram = glCreateProgram();
-	// Link it to the shaders we've made
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram); // Make the program!
-
-	// Check the program was creates successfully
-	{
-		int success;
-		char infoLog[512];
-		glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-
-		if (!success)
-		{
-			glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-			logger.log("ERROR::PROGRAM::LINKING_FAILED");
-			logger.log(infoLog);
-			glfwTerminate();
-			return 4;
-		}
-	}
-
-	// Once the shaders have been linked in to a program, we no longer need them
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
+	Shader shader(fileSystem.wdRelativePath({ "resources", "rgbaVertexShader.glsl" }).toString().c_str(), 
+				  fileSystem.wdRelativePath({ "resources", "rgbaFragmentShader.glsl" }).toString().c_str());
 
 	// Render loop
 	while (!glfwWindowShouldClose(window.get()))
@@ -179,7 +121,7 @@ int main(int argc, char* argv[])
 		// Render stuff
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glUseProgram(shaderProgram);
+		shader.use();
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
