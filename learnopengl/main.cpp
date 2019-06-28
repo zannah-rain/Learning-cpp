@@ -7,6 +7,13 @@
 #include "Shader.h"
 #include "Texture.h"
 
+#include <iostream>
+
+// glm stuff
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 // A callback function we'll use for changing the openGL viewport size
 void framebuffer_size_callback(GLFWwindow * window, int height, int width);
 
@@ -120,10 +127,22 @@ int main(int argc, char* argv[])
 	);
 	glEnableVertexAttribArray(2); // Enable color attribute
 
-	Shader shader(fileSystem.wdRelativePath({ "resources", "TexVertexShader.glsl" }).toString().c_str(), 
-				  fileSystem.wdRelativePath({ "resources", "TexFragmentShader.glsl" }).toString().c_str());
+	Shader shader(fileSystem.wdRelativePath({ "resources", "TexTransVertexShader.glsl" }).toString().c_str(), 
+				  fileSystem.wdRelativePath({ "resources", "TexTransFragmentShader.glsl" }).toString().c_str());
 
 	Texture tex(fileSystem.wdRelativePath({ "resources", "roguelikeSheet_magenta.bmp"}));
+
+	// Try out glm
+	glm::vec4 vec(0.0f, 0.0f, 0.0f, 1.0f);
+	glm::mat4 trans = glm::mat4(1.0f); // Sets to the identity matrix
+	//trans = glm::translate(trans, glm::vec3(0.25f, 0.25f, 0.0f));
+	trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+	trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+	vec = trans * vec;
+	std::cout << vec.x << vec.y << vec.z << std::endl;
+
+	// Send the transformation matrix to the GPU
+	unsigned int transformLoc = glGetUniformLocation(shader.ID, "transform");
 
 	// Render loop
 	while (!glfwWindowShouldClose(window.get()))
@@ -131,11 +150,15 @@ int main(int argc, char* argv[])
 		// Process inputs since last frame
 		processInput(window.get());
 
+		trans = glm::rotate(trans, glm::radians(0.1f), glm::vec3(1.0, 1.0, 1.0));
+
 		// Render stuff
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		shader.use();
 		tex.use();
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);

@@ -29,3 +29,6 @@ target_link_libraries(learnopengl ${OPENGL_glu_LIBRARY})
 
 # And glad
 include_directories("include/")
+
+# Grab glm from GeneralLib
+include_directories("../GeneralLib/include/")

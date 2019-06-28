@@ -7,6 +7,9 @@
 Texture::Texture(FilePath filePath)
 {
 	int width, height, nrChannels;
+
+	stbi_set_flip_vertically_on_load(true);
+
 	std::unique_ptr<unsigned char, decltype(&stbi_image_free)> data(stbi_load(filePath.toString().c_str(), &width, &height, &nrChannels, 0), &stbi_image_free);
 
 	if (data)
