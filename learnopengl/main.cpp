@@ -86,11 +86,50 @@ int main(int argc, char* argv[])
 	// Bind the Vertex Buffer Object before passing vertices!
 	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Specify that VBO should be an array buffer (for vertices)
 	// Define vertices of two triangles in the CPU!
+
 	float vertices[] = {
-	// positions			// colours			// Texture coords
-	 0.5f,  0.5f, 0.0f,		1.0f, 0.0f, 0.0f,	1.0f, 1.0f,
-	 0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,	0.0f, 1.0f,
-	-0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	0.0f, 0.0f
+		// positions			// colours			// texture coords
+		-0.5f, -0.5f, -0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+
+		 0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f
 	};
 	// Send them to the GPU!
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -153,6 +192,9 @@ int main(int argc, char* argv[])
 	unsigned int viewLoc = glGetUniformLocation(shader.ID, "view");
 	unsigned int projectionLoc = glGetUniformLocation(shader.ID, "projection");
 
+	// Enable depth testing
+	glEnable(GL_DEPTH_TEST);
+
 	// Render loop
 	while (!glfwWindowShouldClose(window.get()))
 	{
@@ -160,7 +202,10 @@ int main(int argc, char* argv[])
 		processInput(window.get());
 
 		// Render stuff
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// Rotate tha cube
+		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(0.01f), glm::vec3(0.5f, 1.0f, 0.0f));
 
 		shader.use();
 		tex.use();
@@ -169,7 +214,7 @@ int main(int argc, char* argv[])
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 
 		// We have one buffer for drawing to and one to send to the screen
