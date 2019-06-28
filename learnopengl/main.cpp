@@ -127,22 +127,31 @@ int main(int argc, char* argv[])
 	);
 	glEnableVertexAttribArray(2); // Enable color attribute
 
-	Shader shader(fileSystem.wdRelativePath({ "resources", "TexTransVertexShader.glsl" }).toString().c_str(), 
-				  fileSystem.wdRelativePath({ "resources", "TexTransFragmentShader.glsl" }).toString().c_str());
+	Shader shader(fileSystem.wdRelativePath({ "resources", "3dVertexShader.glsl" }).toString().c_str(), 
+				  fileSystem.wdRelativePath({ "resources", "3dFragmentShader.glsl" }).toString().c_str());
 
 	Texture tex(fileSystem.wdRelativePath({ "resources", "roguelikeSheet_magenta.bmp"}));
 
-	// Try out glm
-	glm::vec4 vec(0.0f, 0.0f, 0.0f, 1.0f);
-	glm::mat4 trans = glm::mat4(1.0f); // Sets to the identity matrix
-	//trans = glm::translate(trans, glm::vec3(0.25f, 0.25f, 0.0f));
-	trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-	trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
-	vec = trans * vec;
-	std::cout << vec.x << vec.y << vec.z << std::endl;
+	// The matrices to transform stuff to the 2d screen :)
+	// model matrix goes from model coords to world coords
+	glm::mat4 model = glm::mat4(1.0f); // The model matrix
+	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+	// View matrix
+	// Transforms everything relative to the camera position & rotation
+	glm::mat4 view = glm::mat4(1.0f);
+	// note that we're translating the scene in the reverse direction of where we want to move
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+	// Projection matrix
+	// Applies perspective!
+	glm::mat4 projection;
+	projection = glm::perspective(glm::radians(45.0f), (float)cWindowWidth / (float)cWindowHeight, 0.1f, 100.0f);
 
 	// Send the transformation matrix to the GPU
-	unsigned int transformLoc = glGetUniformLocation(shader.ID, "transform");
+	unsigned int modelLoc = glGetUniformLocation(shader.ID, "model");
+	unsigned int viewLoc = glGetUniformLocation(shader.ID, "view");
+	unsigned int projectionLoc = glGetUniformLocation(shader.ID, "projection");
 
 	// Render loop
 	while (!glfwWindowShouldClose(window.get()))
@@ -150,14 +159,14 @@ int main(int argc, char* argv[])
 		// Process inputs since last frame
 		processInput(window.get());
 
-		trans = glm::rotate(trans, glm::radians(0.1f), glm::vec3(1.0, 1.0, 1.0));
-
 		// Render stuff
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		shader.use();
 		tex.use();
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
