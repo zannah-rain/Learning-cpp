@@ -5,6 +5,7 @@
 #include "glad/glad.h"
 #include "glfw3.h"
 #include "Shader.h"
+#include "Texture.h"
 
 // A callback function we'll use for changing the openGL viewport size
 void framebuffer_size_callback(GLFWwindow * window, int height, int width);
@@ -79,10 +80,10 @@ int main(int argc, char* argv[])
 	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Specify that VBO should be an array buffer (for vertices)
 	// Define vertices of two triangles in the CPU!
 	float vertices[] = {
-	// positions		// colours
-	 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-	 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-	-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+	// positions			// colours			// Texture coords
+	 0.5f,  0.5f, 0.0f,		1.0f, 0.0f, 0.0f,	1.0f, 1.0f,
+	 0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,	0.0f, 1.0f,
+	-0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	0.0f, 0.0f
 	};
 	// Send them to the GPU!
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -92,7 +93,7 @@ int main(int argc, char* argv[])
 		3, // The size of the vertex attribute, we used vec3 in the shader
 		GL_FLOAT, // The type of the data
 		GL_FALSE, // Do we want the data to be normalized
-		6 * sizeof(float), // The distance between each set of vertex attributes
+		8 * sizeof(float), // The distance between each set of vertex attributes
 		(void*)0 // The offset of where the position data begins in the buffer
 	);
 	glEnableVertexAttribArray(0); // Enable position attribute
@@ -103,13 +104,26 @@ int main(int argc, char* argv[])
 		3, // The size of the vertex attribute, we used vec3 in the shader
 		GL_FLOAT, // The type of the data
 		GL_FALSE, // Do we want the data to be normalized
-		6 * sizeof(float), // The distance between each set of vertex attributes
+		8 * sizeof(float), // The distance between each set of vertex attributes
 		(void*)(3*sizeof(float)) // The offset of where the position data begins in the buffer
 	);
 	glEnableVertexAttribArray(1); // Enable color attribute
 
-	Shader shader(fileSystem.wdRelativePath({ "resources", "rgbaVertexShader.glsl" }).toString().c_str(), 
-				  fileSystem.wdRelativePath({ "resources", "rgbaFragmentShader.glsl" }).toString().c_str());
+	// Notify openGL the format that the texture coords are in
+	glVertexAttribPointer(
+		2, // Which vertex attribute we want to configure, we used location = 0 in the shader
+		2, // The size of the vertex attribute, we used vec3 in the shader
+		GL_FLOAT, // The type of the data
+		GL_FALSE, // Do we want the data to be normalized
+		8 * sizeof(float), // The distance between each set of vertex attributes
+		(void*)(6 * sizeof(float)) // The offset of where the position data begins in the buffer
+	);
+	glEnableVertexAttribArray(2); // Enable color attribute
+
+	Shader shader(fileSystem.wdRelativePath({ "resources", "TexVertexShader.glsl" }).toString().c_str(), 
+				  fileSystem.wdRelativePath({ "resources", "TexFragmentShader.glsl" }).toString().c_str());
+
+	Texture tex(fileSystem.wdRelativePath({ "resources", "roguelikeSheet_magenta.bmp"}));
 
 	// Render loop
 	while (!glfwWindowShouldClose(window.get()))
@@ -121,6 +135,7 @@ int main(int argc, char* argv[])
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		shader.use();
+		tex.use();
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);

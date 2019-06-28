@@ -15,7 +15,9 @@ add_library (GeneralLib
 	FileSystem.h FileSystem.cpp 
 	Logger.h Logger.cpp 
 	whereami.h whereami.c
-	Shader.h Shader.cpp)
+	Shader.h Shader.cpp
+	stb_image_implementation.cpp
+	Texture.h Texture.cpp)
 	
 # Also it depends on GLFW
 target_link_libraries(GeneralLib glfw)
