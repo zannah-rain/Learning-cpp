@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
 	while (!glfwWindowShouldClose(window.get()))
 	{
 		// Update deltaTime
-		float currentFrame = glfwGetTime();
+		float currentFrame = (float)glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
