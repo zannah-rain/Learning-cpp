@@ -19,7 +19,7 @@
 void framebuffer_size_callback(GLFWwindow * window, int height, int width);
 
 // A function to handle inputs
-void processInput(GLFWwindow * window, Camera * camera);
+void processInput(GLFWwindow * window, Camera * camera, float deltaTime);
 
 int main(int argc, char* argv[])
 {
@@ -214,10 +214,17 @@ int main(int argc, char* argv[])
 	};
 
 	// Render loop
+	float deltaTime = 0.0f;
+	float lastFrame = 0.0f;
 	while (!glfwWindowShouldClose(window.get()))
 	{
+		// Update deltaTime
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 		// Process inputs since last frame
-		processInput(window.get(), &camera);
+		processInput(window.get(), &camera, deltaTime);
 
 		// Render stuff
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -267,20 +274,20 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 // Handle inputs
-void processInput(GLFWwindow * window, Camera * camera)
+void processInput(GLFWwindow * window, Camera * camera, float deltaTime)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	float cameraSpeed = 0.05f; // adjust accordingly
+	float cameraSpeed = 1.0f; // adjust accordingly
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-		camera->move(cameraSpeed * camera->up);
+		camera->move(cameraSpeed * camera->up * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-		camera->move(-cameraSpeed * camera->up);
+		camera->move(-cameraSpeed * camera->up * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		camera->move(cameraSpeed * camera->right);
+		camera->move(cameraSpeed * camera->right * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-		camera->move(-cameraSpeed * camera->right);
+		camera->move(-cameraSpeed * camera->right * deltaTime);
 }
