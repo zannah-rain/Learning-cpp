@@ -9,4 +9,5 @@ private:
 public:
 	Texture(FilePath filePath);
 	void use();
+	unsigned int ID();
 };

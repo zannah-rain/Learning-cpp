@@ -1,9 +1,9 @@
 #include <memory>
 #include "FileSystem.h"
-#include "Logger.h"
-// GLAD MUST BE INCLUDED BEFORE glfw
 #include "glad/glad.h"
 #include "glfw3.h"
+#include "Logger.h"
+#include "Model.cpp"
 #include "Shader.h"
 #include "Texture.h"
 #include "Camera.h"
@@ -74,6 +74,9 @@ int main(int argc, char* argv[])
 
 	glfwSetFramebufferSizeCallback(window.get(), framebuffer_size_callback);
 
+	// Enable depth testing
+	glEnable(GL_DEPTH_TEST);
+
 	// Set the "clear" color we'll overwrite previous frames with before drawing
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
@@ -81,17 +84,11 @@ int main(int argc, char* argv[])
 	unsigned int VAO;
 	glGenVertexArrays(1, &VAO);
 
-	glBindVertexArray(VAO); // Assign vertex options to this array
-
 	// Create our Vertex Buffer Object, to pass vertices to the GPU
 	unsigned int VBO;
 	glGenBuffers(1, &VBO); // Creates a bunch of buffers
-	
-	// Bind the Vertex Buffer Object before passing vertices!
-	glBindBuffer(GL_ARRAY_BUFFER, VBO); // Specify that VBO should be an array buffer (for vertices)
-	// Define vertices of two triangles in the CPU!
 
-	float vertices[] = {
+	std::vector<float> vertices = {
 		// positions			// colours			// texture coords
 		-0.5f, -0.5f, -0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
 		 0.5f, -0.5f, -0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
@@ -135,45 +132,23 @@ int main(int argc, char* argv[])
 		-0.5f,  0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
 		-0.5f,  0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f
 	};
-	// Send them to the GPU!
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	// Tell openGL how to translate our positional values to its own stuff
-	glVertexAttribPointer(
-		0, // Which vertex attribute we want to configure, we used location = 0 in the shader
-		3, // The size of the vertex attribute, we used vec3 in the shader
-		GL_FLOAT, // The type of the data
-		GL_FALSE, // Do we want the data to be normalized
-		8 * sizeof(float), // The distance between each set of vertex attributes
-		(void*)0 // The offset of where the position data begins in the buffer
-	);
-	glEnableVertexAttribArray(0); // Enable position attribute
 
-	// Tell openGL how to translate our colour to its own stuff
-	glVertexAttribPointer(
-		1, // Which vertex attribute we want to configure, we used location = 0 in the shader
-		3, // The size of the vertex attribute, we used vec3 in the shader
-		GL_FLOAT, // The type of the data
-		GL_FALSE, // Do we want the data to be normalized
-		8 * sizeof(float), // The distance between each set of vertex attributes
-		(void*)(3*sizeof(float)) // The offset of where the position data begins in the buffer
-	);
-	glEnableVertexAttribArray(1); // Enable color attribute
-
-	// Notify openGL the format that the texture coords are in
-	glVertexAttribPointer(
-		2, // Which vertex attribute we want to configure, we used location = 0 in the shader
-		2, // The size of the vertex attribute, we used vec3 in the shader
-		GL_FLOAT, // The type of the data
-		GL_FALSE, // Do we want the data to be normalized
-		8 * sizeof(float), // The distance between each set of vertex attributes
-		(void*)(6 * sizeof(float)) // The offset of where the position data begins in the buffer
-	);
-	glEnableVertexAttribArray(2); // Enable color attribute
-
+	// Set up and apply our shader (only one so doesn't need to be in the render loop)
 	Shader shader(fileSystem.wdRelativePath({ "resources", "3dVertexShader.glsl" }).toString().c_str(), 
 				  fileSystem.wdRelativePath({ "resources", "3dFragmentShader.glsl" }).toString().c_str());
+	shader.use();
 
-	Texture tex(fileSystem.wdRelativePath({ "resources", "roguelikeSheet_magenta.bmp"}));
+	Texture tex(fileSystem.wdRelativePath({ "resources", "roguelikeSheet_magenta.bmp" }));
+
+	Model cubeModel(
+		vertices,
+		3,
+		3,
+		2,
+		VAO,
+		VBO,
+		false,
+		&tex);
 
 	// The matrices to transform stuff to the 2d screen :)
 	// model matrix goes from model coords to world coords
@@ -196,9 +171,6 @@ int main(int argc, char* argv[])
 	unsigned int viewLoc = glGetUniformLocation(shader.ID, "view");
 	unsigned int projectionLoc = glGetUniformLocation(shader.ID, "projection");
 
-	// Enable depth testing
-	glEnable(GL_DEPTH_TEST);
-
 	// MOAR CUBES
 	glm::vec3 cubePositions[] = {
 		glm::vec3(0.0f,  0.0f,  0.0f),
@@ -212,6 +184,9 @@ int main(int argc, char* argv[])
 		glm::vec3(1.5f,  0.2f, -1.5f),
 		glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
+
+	// The projection matrix is constant so we can send it before the render loop
+	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 	// Render loop
 	float deltaTime = 0.0f;
@@ -229,14 +204,9 @@ int main(int argc, char* argv[])
 		// Render stuff
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shader.use();
-		tex.use();
-
 		// Create the view matrix from the camera
 		view = camera.view();
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		glBindVertexArray(VAO);
 		for (unsigned int i = 0; i < 10; i++)
@@ -251,10 +221,8 @@ int main(int argc, char* argv[])
 
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+			cubeModel.draw();
 		}
-		
-		glBindVertexArray(0);
 
 		// We have one buffer for drawing to and one to send to the screen
 		glfwSwapBuffers(window.get());

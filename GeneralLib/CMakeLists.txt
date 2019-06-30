@@ -18,7 +18,8 @@ add_library (GeneralLib
 	Shader.h Shader.cpp
 	stb_image_implementation.cpp
 	Texture.h Texture.cpp
-	Camera.h Camera.cpp)
+	Camera.h Camera.cpp
+	Model.h Model.cpp)
 	
 # Also it depends on GLFW
 target_link_libraries(GeneralLib glfw)
