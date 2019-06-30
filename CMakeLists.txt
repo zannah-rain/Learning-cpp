@@ -20,6 +20,7 @@ add_subdirectory (SDLExample3)
 add_subdirectory (SDL2-2.0.9 EXCLUDE_FROM_ALL)
 add_subdirectory (glfw-3.3 EXCLUDE_FROM_ALL)
 add_subdirectory (learnopengl)
+add_subdirectory (SpaceFight)
 
 
 
@@ -41,6 +42,7 @@ add_dependencies(GeneralLibTests_run GeneralLib)
 # Building further projects should only happen if unit tests are passing
 add_dependencies(SDLExample3 GeneralLibTests_run)
 add_dependencies(learnopengl GeneralLibTests_run)
+add_dependencies(SpaceFight GeneralLibTests_run)
 
 
 
@@ -53,6 +55,7 @@ add_custom_target(CopyResources
 # SDLExample3 needs those resources
 add_dependencies(SDLExample3 CopyResources)
 add_dependencies(learnopengl CopyResources)
+add_dependencies(SpaceFight CopyResources)
 
 
 
@@ -82,7 +85,7 @@ endif (DOXYGEN_FOUND)
 
 
 # Organise stuff in IDEs even more!
-set_target_properties (SDL2 doc_doxygen GeneralLibTests_run glfw CopyResources PROPERTIES
+set_target_properties (SDL2 doc_doxygen GeneralLibTests_run glfw CopyResources learnopengl SDLExample3 PROPERTIES
 	FOLDER Background
 )
 
@@ -91,4 +94,4 @@ set_target_properties (SDL2 doc_doxygen GeneralLibTests_run glfw CopyResources P
 
 # VS specific stuff
 # Set the actual program as the startup project (what gets run on F5)
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT learnopengl)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SpaceFight)

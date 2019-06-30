@@ -17,7 +17,8 @@ add_library (GeneralLib
 	whereami.h whereami.c
 	Shader.h Shader.cpp
 	stb_image_implementation.cpp
-	Texture.h Texture.cpp)
+	Texture.h Texture.cpp
+	Camera.h Camera.cpp)
 	
 # Also it depends on GLFW
 target_link_libraries(GeneralLib glfw)
@@ -29,7 +30,7 @@ target_link_libraries(GeneralLib ${OPENGL_gl_LIBRARY})
 target_link_libraries(GeneralLib ${OPENGL_glu_LIBRARY})
 
 # And glad
-include_directories("include/")
+include_directories("../include/")
 
 # Make sure the compiler can find include files for our GeneralLib library
 # when other libraries or executables link to GeneralLib

@@ -13,19 +13,19 @@ else (OPENGL_FOUND)
 endif()
 
 # Create a .exe
-add_executable(learnopengl main.cpp glad.c)
+add_executable(SpaceFight main.cpp glad.c)
 
 # It depends on the .dll made in a previous project
-target_link_libraries(learnopengl GeneralLib)
+target_link_libraries(SpaceFight GeneralLib)
 
 # Also it depends on GLFW
-target_link_libraries(learnopengl glfw)
+target_link_libraries(SpaceFight glfw)
 include_directories("../glfw-3.3/include/GLFW/")
 
 # And also on opengl
 include_directories(${OPENGL_INCLUDE_DIR})
-target_link_libraries(learnopengl ${OPENGL_gl_LIBRARY})
-target_link_libraries(learnopengl ${OPENGL_glu_LIBRARY})
+target_link_libraries(SpaceFight ${OPENGL_gl_LIBRARY})
+target_link_libraries(SpaceFight ${OPENGL_glu_LIBRARY})
 
 # And glad
 include_directories("../include/")
