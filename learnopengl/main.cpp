@@ -6,6 +6,7 @@
 #include "glfw3.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Camera.h"
 
 #include <iostream>
 
@@ -18,15 +19,18 @@
 void framebuffer_size_callback(GLFWwindow * window, int height, int width);
 
 // A function to handle inputs
-void processInput(GLFWwindow * window);
+void processInput(GLFWwindow * window, Camera * camera);
 
 int main(int argc, char* argv[])
 {
 	Logger logger;
 	FileSystem fileSystem;
+	Camera camera;
 
 	unsigned int cWindowWidth = 640;
 	unsigned int cWindowHeight = 480;
+
+	glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
 	
 	logger.log("Program started");
 	
@@ -213,7 +217,7 @@ int main(int argc, char* argv[])
 	while (!glfwWindowShouldClose(window.get()))
 	{
 		// Process inputs since last frame
-		processInput(window.get());
+		processInput(window.get(), &camera);
 
 		// Render stuff
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -221,7 +225,10 @@ int main(int argc, char* argv[])
 		shader.use();
 		tex.use();
 
+		// Create the view matrix from the camera
+		view = camera.view();
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		glBindVertexArray(VAO);
@@ -260,10 +267,20 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 // Handle inputs
-void processInput(GLFWwindow * window)
+void processInput(GLFWwindow * window, Camera * camera)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
 	}
+
+	float cameraSpeed = 0.05f; // adjust accordingly
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		camera->move(cameraSpeed * camera->up);
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		camera->move(-cameraSpeed * camera->up);
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		camera->move(cameraSpeed * camera->right);
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		camera->move(-cameraSpeed * camera->right);
 }
