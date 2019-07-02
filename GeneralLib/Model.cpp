@@ -7,6 +7,7 @@ Model::Model(
 	unsigned short nPositions, /** How many entries in vertices are positional*/
 	unsigned short nColours, /** How many entries in vertices are colours*/
 	unsigned short nTextureCoords, /** How many entries in vertices are texturecoords*/
+	unsigned short nNormalCoords, /** How many entries in the vertices are normals */
 	unsigned int VAO, /** Which VAO to use*/
 	unsigned int VBO, /** Which VBO to use*/
 	bool willChangeFrequently,
@@ -25,10 +26,11 @@ Model::Model(
 		willChangeFrequently,
 		nPositions,
 		nColours,
-		nTextureCoords);
+		nTextureCoords,
+		nNormalCoords);
 
 	// Save how many vertices there are
-	nVertices = vertices.size() / (nPositions + nColours + nTextureCoords);
+	nVertices = vertices.size() / (nPositions + nColours + nTextureCoords + nNormalCoords);
 }
 
 void Model::bufferData(
@@ -36,7 +38,8 @@ void Model::bufferData(
 	bool willChangeFrequently,
 	unsigned short nPositions,
 	unsigned short nColours,
-	unsigned short nTextureCoords)
+	unsigned short nTextureCoords,
+	unsigned short nNormalCoords)
 {
 	// Bind the VAO
 	glBindVertexArray(_VAO);
@@ -61,7 +64,7 @@ void Model::bufferData(
 			nPositions, // The size of the vertex attribute, we used vec3 in the shader
 			GL_FLOAT, // The type of the data
 			GL_FALSE, // Do we want the data to be normalized
-			(nPositions + nColours + nTextureCoords) * sizeof(float), // The distance between each set of vertex attributes
+			(nPositions + nColours + nTextureCoords + nNormalCoords) * sizeof(float), // The distance between each set of vertex attributes
 			(void*)(currentOffset * sizeof(float)) // The offset of where the position data begins in the buffer
 		);
 		currentOffset += nPositions;
@@ -74,7 +77,7 @@ void Model::bufferData(
 			nColours, // The size of the vertex attribute, we used vec3 in the shader
 			GL_FLOAT, // The type of the data
 			GL_FALSE, // Do we want the data to be normalized
-			(nPositions + nColours + nTextureCoords) * sizeof(float), // The distance between each set of vertex attributes
+			(nPositions + nColours + nTextureCoords + nNormalCoords) * sizeof(float), // The distance between each set of vertex attributes
 			(void*)(currentOffset * sizeof(float)) // The offset of where the position data begins in the buffer
 		);
 		currentOffset += nColours;
@@ -87,11 +90,24 @@ void Model::bufferData(
 			nTextureCoords, // The size of the vertex attribute, we used vec3 in the shader
 			GL_FLOAT, // The type of the data
 			GL_FALSE, // Do we want the data to be normalized
-			(nPositions + nColours + nTextureCoords) * sizeof(float), // The distance between each set of vertex attributes
+			(nPositions + nColours + nTextureCoords + nNormalCoords) * sizeof(float), // The distance between each set of vertex attributes
 			(void*)(currentOffset * sizeof(float)) // The offset of where the position data begins in the buffer
 		);
 		currentOffset += nTextureCoords;
 		glEnableVertexAttribArray(2);
+	}
+	if (nNormalCoords > 0)
+	{
+		glVertexAttribPointer(
+			3, // Which vertex attribute we want to configure, we used location = 1 in the shader
+			nNormalCoords, // The size of the vertex attribute, we used vec3 in the shader
+			GL_FLOAT, // The type of the data
+			GL_FALSE, // Do we want the data to be normalized
+			(nPositions + nColours + nTextureCoords + nNormalCoords) * sizeof(float), // The distance between each set of vertex attributes
+			(void*)(currentOffset * sizeof(float)) // The offset of where the position data begins in the buffer
+		);
+		currentOffset += nNormalCoords;
+		glEnableVertexAttribArray(3);
 	}
 
 	glBindVertexArray(0);

@@ -2,6 +2,7 @@
 #include "FileSystem.h"
 #include "glad/glad.h"
 #include "glfw3.h"
+#include "loadOBJ.h"
 #include "Logger.h"
 #include "Model.cpp"
 #include "Shader.h"
@@ -14,6 +15,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 // A callback function we'll use for changing the openGL viewport size
 void framebuffer_size_callback(GLFWwindow * window, int height, int width);
@@ -88,6 +90,13 @@ int main(int argc, char* argv[])
 	unsigned int VBO;
 	glGenBuffers(1, &VBO); // Creates a bunch of buffers
 
+	std::vector<float> cubeVertices = loadOBJ(fileSystem.wdRelativePath({ "resources", "cube.obj" }));
+
+	for (const auto i : cubeVertices)
+	{
+		std::cout << i << std::endl;
+	}
+
 	std::vector<float> vertices = {
 		// positions			// colours			// texture coords
 		-0.5f, -0.5f, -0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
@@ -96,35 +105,35 @@ int main(int argc, char* argv[])
 		 0.5f,  0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
 		-0.5f,  0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
 		-0.5f, -0.5f, -0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
-
+	
 		-0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
 		 0.5f, -0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
 		 0.5f,  0.5f,  0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
 		 0.5f,  0.5f,  0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
 		-0.5f,  0.5f,  0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
 		-0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
-
+	
 		-0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
 		-0.5f,  0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
 		-0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
 		-0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
 		-0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
 		-0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
-
+	
 		 0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
 		 0.5f,  0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
 		 0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
 		 0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
 		 0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
 		 0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
-
+	
 		-0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
 		 0.5f, -0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
 		 0.5f, -0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
 		 0.5f, -0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
 		-0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
 		-0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
-
+	
 		-0.5f,  0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
 		 0.5f,  0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
 		 0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
@@ -141,10 +150,11 @@ int main(int argc, char* argv[])
 	Texture tex(fileSystem.wdRelativePath({ "resources", "roguelikeSheet_magenta.bmp" }));
 
 	Model cubeModel(
-		vertices,
+		cubeVertices,
 		3,
-		3,
+		0,
 		2,
+		3,
 		VAO,
 		VBO,
 		false,

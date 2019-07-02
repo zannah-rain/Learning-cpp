@@ -17,6 +17,7 @@ public:
 		unsigned short nPositions, /** How many entries in vertices are positional*/
 		unsigned short nColours, /** How many entries in vertices are colours*/
 		unsigned short nTextureCoords, /** How many entries in vertices are texturecoords*/
+		unsigned short nNormalCoords, /** How many entries in the vertices are normals */
 		unsigned int VAO, 
 		unsigned int VBO, 
 		bool willChangeFrequently,
@@ -28,7 +29,8 @@ public:
 		bool willChangeFrequently,
 		unsigned short nPositions,
 		unsigned short nColours,
-		unsigned short nTextureCoords);
+		unsigned short nTextureCoords,
+		unsigned short nNormalCoords);
 
 	void draw();
 };
