@@ -19,7 +19,10 @@ add_library (GeneralLib
 	stb_image_implementation.cpp
 	Texture.h Texture.cpp
 	Camera.h Camera.cpp
-	Model.h Model.cpp)
+	Model.h Model.cpp
+	wrapFILE.h wrapFILE.cpp
+	loadOBJ.h loadOBJ.cpp
+	Vertex.h Vertex.cpp
 	
 # Also it depends on GLFW
 target_link_libraries(GeneralLib glfw)
