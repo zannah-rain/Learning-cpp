@@ -13,7 +13,4 @@ struct Vertex;
 *
 * @return Whether the operation was a success or not
 */
-bool loadOBJ(
-	FilePath path,
-	std::vector< Vertex > &outVertices
-);
+bool loadOBJ(FilePath path,	std::vector< Vertex > &outVertices);
