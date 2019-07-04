@@ -3,15 +3,25 @@
 #include <memory>
 
 #include "glm/glm.hpp"
+#include "glm/gtc/quaternion.hpp"
+#include "glm/gtx/quaternion.hpp"
 
-#include "Model.h"
+class Model;
 
 /**
 * A basic superclass for instances which have a presence somewhere in the game world.
 */
 class WorldObject
 {
-	glm::vec3 position; /** The world coordinates for the center of the object*/
-	glm::mat4 rotation; /** The current rotation of the object in the game world*/
-	std::unique_ptr<Model> model; /** The model representing this objects vertices etc*/
+public:
+	WorldObject(glm::vec3 position, glm::quat rotation, Model * model);
+	WorldObject(glm::vec3 position, Model * model);
+
+	glm::mat4 getModelMatrix() const;
+
+	Model * mpModel; /** The model representing this objects vertices etc*/
+
+private:
+	glm::vec3 mPosition; /** The world coordinates for the center of the object*/
+	glm::quat mRotation; /** Quaternion of the current rotation of the object in the game world*/
 };
