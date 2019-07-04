@@ -1,5 +1,6 @@
 #pragma once
 #include "Texture.h"
+#include "Vertex.h"
 
 /**
 *	A class to represent a static 3d model
@@ -12,8 +13,9 @@ private:
 	Texture * _texture; /** The texture object that the model uses */
 	unsigned int nVertices; /** Record how many vertices are sent to the GPU for draw calls*/
 public:
+	/** Explicit constructor */
 	Model(
-		std::vector<float> vertices, 
+		std::vector< float > vertices, 
 		unsigned short nPositions, /** How many entries in vertices are positional*/
 		unsigned short nColours, /** How many entries in vertices are colours*/
 		unsigned short nTextureCoords, /** How many entries in vertices are texturecoords*/
@@ -21,11 +23,18 @@ public:
 		unsigned int VAO, 
 		unsigned int VBO, 
 		bool willChangeFrequently,
-		Texture * texture
-	);
+		Texture * texture);
+
+	/** Standard constructor */
+	Model::Model(
+		std::vector< Vertex > vertices, /** Vertex data for the model*/
+		unsigned int VAO, /** Which VAO to use*/
+		unsigned int VBO, /** Which VBO to use*/
+		bool willChangeFrequently,
+		Texture * texture);
 
 	void bufferData(
-		std::vector<float> vertices,
+		std::vector< float > vertices,
 		bool willChangeFrequently,
 		unsigned short nPositions,
 		unsigned short nColours,

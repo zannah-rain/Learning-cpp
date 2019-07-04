@@ -1,51 +1,14 @@
+#include "glm/glm.hpp"
 #include "loadOBJ.h"
-
 #include "wrapFILE.h"
+#include "Vertex.h"
 
 #include <iostream>
 #include <fstream>
 
-// Just an interleaved version of the below
-std::vector<float> loadOBJ(FilePath path)
-{
-	std::vector<float> outVertices;
-	std::vector< glm::vec3 > temp_vertices;
-	std::vector< glm::vec2 > temp_uvs;
-	std::vector< glm::vec3 > temp_normals;
-
-	if (!loadOBJ(path, temp_vertices, temp_uvs, temp_normals))
-	{
-		return outVertices;
-	}
-
-	for (size_t i = 0; i < temp_vertices.size(); i++)
-	{
-		float * tempVerticesArray = &(temp_vertices[i].x);
-		float * tempUVArray = &temp_uvs[i].x;
-		float * tempNormalsArray = &temp_normals[i].x;
-
-		for (size_t j = 0; j < 3; j++)
-		{
-			outVertices.push_back(tempVerticesArray[j]);
-		}
-		for (size_t j = 0; j < 2; j++)
-		{
-			outVertices.push_back(tempUVArray[j]);
-		}
-		for (size_t j = 0; j < 3; j++)
-		{
-			outVertices.push_back(tempNormalsArray[j]);
-		}
-	}
-
-	return outVertices;
-}
-
 bool loadOBJ(
 	FilePath path,
-	std::vector<glm::vec3> &out_vertices,
-	std::vector<glm::vec2> &out_uvs,
-	std::vector<glm::vec3> &out_normals)
+	std::vector< Vertex > &outVertices)
 {
 	// Store the results in temporary variables
 	// Don't want to modify anything until we've done checks
@@ -105,7 +68,6 @@ bool loadOBJ(
 		else if (strcmp(lineHeader, "f") == 0)
 		{
 			// "f" tells us how to glue together the stuff we've been reading so far
-			std::string vertex1, vertex2, vertex3;
 			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
 			int matches = fscanf_s(file.get(), "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
 			if (matches != 9)
@@ -125,21 +87,22 @@ bool loadOBJ(
 		}
 	}
 
-	// For each vertex of each triangle
-	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
-		// OBJ indexing starts at 1
-		glm::vec3 vertex = temp_vertices[vertexIndices[i] - 1];
-		out_vertices.push_back(vertex);
-	}
-	for (unsigned int i = 0; i < uvIndices.size(); i++) {
-		// OBJ indexing starts at 1
-		glm::vec2 uv = temp_uvs[uvIndices[i] - 1];
-		out_uvs.push_back(uv);
-	}
-	for (unsigned int i = 0; i < normalIndices.size(); i++) {
-		// OBJ indexing starts at 1
-		glm::vec3 normal = temp_normals[normalIndices[i] - 1];
-		out_normals.push_back(normal);
+	for (unsigned int i = 0; i < vertexIndices.size(); i++)
+	{
+		Vertex vertex;
+		
+		vertex.posX = temp_vertices[vertexIndices[i] - 1].x;
+		vertex.posY = temp_vertices[vertexIndices[i] - 1].y;
+		vertex.posZ = temp_vertices[vertexIndices[i] - 1].z;
+
+		vertex.texX = temp_uvs[uvIndices[i] - 1].x;
+		vertex.texY = temp_uvs[uvIndices[i] - 1].y;
+
+		vertex.normX = temp_normals[vertexIndices[i] - 1].x;
+		vertex.normY = temp_normals[vertexIndices[i] - 1].y;
+		vertex.normZ = temp_normals[vertexIndices[i] - 1].z;
+
+		outVertices.push_back(vertex);
 	}
 
 	return true;

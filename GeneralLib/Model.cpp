@@ -1,9 +1,11 @@
-#include "Model.h"
-#include "glad/glad.h"
 #include <vector>
 
+#include "glad/glad.h"
+#include "Model.h"
+#include "Vertex.h"
+
 Model::Model(
-	std::vector<float> vertices, /** Vertex data for the model*/
+	std::vector< float > vertices, /** Raw vertex data for the model*/
 	unsigned short nPositions, /** How many entries in vertices are positional*/
 	unsigned short nColours, /** How many entries in vertices are colours*/
 	unsigned short nTextureCoords, /** How many entries in vertices are texturecoords*/
@@ -31,6 +33,32 @@ Model::Model(
 
 	// Save how many vertices there are
 	nVertices = vertices.size() / (nPositions + nColours + nTextureCoords + nNormalCoords);
+}
+
+Model::Model(
+	std::vector< Vertex > vertices, /** Vertex data for the model*/
+	unsigned int VAO, /** Which VAO to use*/
+	unsigned int VBO, /** Which VBO to use*/
+	bool willChangeFrequently,
+	Texture * texture)
+{
+	// Save which VAO, VBO we're using for future use
+	_VAO = VAO;
+	_VBO = VBO;
+
+	// Save the texture this model needs to be binded
+	_texture = texture;
+
+	// Send the vertices to the VBO
+	bufferData(
+		Vertex::toFloats(vertices),
+		willChangeFrequently,
+		3,
+		4,
+		2,
+		3);
+
+	nVertices = vertices.size();
 }
 
 void Model::bufferData(

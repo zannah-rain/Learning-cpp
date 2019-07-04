@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Camera.h"
+#include "Vertex.h"
 
 #include <iostream>
 
@@ -90,57 +91,19 @@ int main(int argc, char* argv[])
 	unsigned int VBO;
 	glGenBuffers(1, &VBO); // Creates a bunch of buffers
 
-	std::vector<float> cubeVertices = loadOBJ(fileSystem.wdRelativePath({ "resources", "cube.obj" }));
+	std::vector< Vertex > cubeVertices;
 
-	for (const auto i : cubeVertices)
+	loadOBJ(fileSystem.wdRelativePath({ "resources", "cube.obj" }), cubeVertices);
+
+	for (const auto i : Vertex::toFloats(cubeVertices))
 	{
 		std::cout << i << std::endl;
 	}
 
-	std::vector<float> vertices = {
-		// positions			// colours			// texture coords
-		-0.5f, -0.5f, -0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
-	
-		-0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
-	
-		-0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
-	
-		 0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
-	
-		-0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
-	
-		-0.5f,  0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  	1.0f, 1.0f, 1.0f,	1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  	1.0f, 0.0f, 0.0f,	1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  	0.0f, 0.0f, 0.0f,	0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  	0.0f, 1.0f, 1.0f,	0.0f, 1.0f
-	};
+	for (const auto i : cubeVertices)
+	{
+		std::cout << " X: " << i.posX << " Y: " << i.posY << " Z: " << i.posZ << " R: " << i.r << " G: " << i.g << " B: " << i.b << " A: " << i.a << " texX: " << i.texX << " texY: " << i.texY << std::endl;
+	}
 
 	// Set up and apply our shader (only one so doesn't need to be in the render loop)
 	Shader shader(fileSystem.wdRelativePath({ "resources", "3dVertexShader.glsl" }).toString().c_str(), 
@@ -151,10 +114,6 @@ int main(int argc, char* argv[])
 
 	Model cubeModel(
 		cubeVertices,
-		3,
-		0,
-		2,
-		3,
 		VAO,
 		VBO,
 		false,
