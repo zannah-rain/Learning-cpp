@@ -1,5 +1,8 @@
 #include "OGLHandler.h"
 
+#include "glad/glad.h"
+#include "glfw3.h"
+
 OGLHandler::OGLHandler() : windowWidth(640), windowHeight(480) {}
 
 bool OGLHandler::init(GLFWwindow * window)

@@ -1,6 +1,9 @@
 #pragma once
+
 #include <memory>
-#include "FilePath.h"
+
+// Forward declarations
+class FilePath;
 
 class Texture
 {

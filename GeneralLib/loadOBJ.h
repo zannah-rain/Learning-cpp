@@ -1,7 +1,9 @@
 #include <vector>
 
 #include "FilePath.h"
-#include "Vertex.h"
+
+// Forward declarations
+struct Vertex;
 
 /**
 * Load a .obj file

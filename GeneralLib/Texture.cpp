@@ -1,8 +1,9 @@
 #include <iostream>
 
+#include "FilePath.h"
+#include "glad/glad.h"
 #include "stb_image.h"
 #include "Texture.h"
-#include "glad/glad.h"
 
 Texture::Texture(FilePath filePath)
 {

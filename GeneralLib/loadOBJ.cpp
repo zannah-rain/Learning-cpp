@@ -1,10 +1,10 @@
+#include <iostream>
+#include <fstream>
+
 #include "glm/glm.hpp"
 #include "loadOBJ.h"
 #include "wrapFILE.h"
 #include "Vertex.h"
-
-#include <iostream>
-#include <fstream>
 
 bool loadOBJ(
 	FilePath path,

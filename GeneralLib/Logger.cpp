@@ -1,5 +1,5 @@
-#include <string>
 #include <iostream>
+
 #include "Logger.h"
 
 Logger::Logger(int const initialLevel)

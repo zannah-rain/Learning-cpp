@@ -3,7 +3,8 @@
 #include <memory>
 #include <string>
 
-#include "FilePath.h"
+// Forward declarations
+class FilePath;
 
 /**
 * Stateless destructor 

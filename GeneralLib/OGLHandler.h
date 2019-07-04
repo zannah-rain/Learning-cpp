@@ -1,7 +1,7 @@
 #pragma once
 
-#include "glad/glad.h"
-#include "glfw3.h"
+// Forward declarations
+struct GLFWwindow;
 
 /**
 * A class to handle global / very general openGL settings

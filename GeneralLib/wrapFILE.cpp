@@ -1,5 +1,7 @@
 #include "wrapFILE.h"
 
+#include "FilePath.h"
+
 void FILEDeleter::operator()(FILE *pFile)
 {
 	if (pFile)

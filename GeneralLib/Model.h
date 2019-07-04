@@ -1,6 +1,8 @@
 #pragma once
-#include "Texture.h"
-#include "Vertex.h"
+
+// Forward declarations
+class Texture;
+struct Vertex;
 
 /**
 *	A class to represent a static 3d model
