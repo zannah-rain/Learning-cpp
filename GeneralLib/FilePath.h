@@ -100,18 +100,18 @@ public:
 	bool empty() const;
 
 private:
+	/**
+	* Append a string to the current FilePath, detecting if it's a folder or file
+	*
+	* @param pathPart A single std::string to add
+	*/
 	void addPathPart(std::string pathPart);
+
 	// In windows we can guess this based on whether the drive is there or not
 	// In Linux we need it as its own member, based on whether the original path begins with a /
 	bool m_isRelative = true; /** Whether it's an absolute or relative filepath */
 
 	std::vector<std::string> m_Folders; /** One entry per folder or drive, in descending order */
 	std::string m_File; /** The file name + type (if any) */
-
-	/**
-	* Append a string to the current FilePath, detecting if it's a folder or file
-	* 
-	* @param pathPart A single std::string to add
-	*/	
 };
 
