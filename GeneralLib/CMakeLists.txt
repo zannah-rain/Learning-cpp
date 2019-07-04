@@ -23,6 +23,7 @@ add_library (GeneralLib
 	wrapFILE.h wrapFILE.cpp
 	loadOBJ.h loadOBJ.cpp
 	Vertex.h Vertex.cpp
+	OGLHandler.h OGLHandler.cpp)
 	
 # Also it depends on GLFW
 target_link_libraries(GeneralLib glfw)

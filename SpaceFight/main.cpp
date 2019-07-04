@@ -5,6 +5,7 @@
 #include "loadOBJ.h"
 #include "Logger.h"
 #include "Model.cpp"
+#include "OGLHandler.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Camera.h"
@@ -29,11 +30,7 @@ int main(int argc, char* argv[])
 	Logger logger;
 	FileSystem fileSystem;
 	Camera camera;
-
-	unsigned int cWindowWidth = 640;
-	unsigned int cWindowHeight = 480;
-
-	glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
+	OGLHandler oglHandler;
 	
 	logger.log("Program started");
 	
@@ -52,7 +49,7 @@ int main(int argc, char* argv[])
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Creating the window
-	std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)> window(glfwCreateWindow(cWindowWidth, cWindowHeight, "LearnOpenGL", NULL, NULL), &glfwDestroyWindow);
+	std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)> window(glfwCreateWindow(oglHandler.windowWidth, oglHandler.windowHeight, "LearnOpenGL", NULL, NULL), &glfwDestroyWindow);
 	if (window == NULL)
 	{
 		logger.log("Window couldn't be created by GLFW");
@@ -72,16 +69,7 @@ int main(int argc, char* argv[])
 		return 2;
 	}
 
-	// Set the initial dimensions of the output window for openGL
-	glViewport(0, 0, cWindowWidth, cWindowHeight);
-
-	glfwSetFramebufferSizeCallback(window.get(), framebuffer_size_callback);
-
-	// Enable depth testing
-	glEnable(GL_DEPTH_TEST);
-
-	// Set the "clear" color we'll overwrite previous frames with before drawing
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	oglHandler.init(window.get()); // Initialise global openGL stuff
 
 	// Create a Vertex Array Object to store a bunch of configurations
 	unsigned int VAO;
@@ -119,21 +107,14 @@ int main(int argc, char* argv[])
 		false,
 		&tex);
 
-	// The matrices to transform stuff to the 2d screen :)
-	// model matrix goes from model coords to world coords
-	glm::mat4 model = glm::mat4(1.0f); // The model matrix
-	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
 	// View matrix
 	// Transforms everything relative to the camera position & rotation
-	glm::mat4 view = glm::mat4(1.0f);
-	// note that we're translating the scene in the reverse direction of where we want to move
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+	glm::mat4 view;
 
 	// Projection matrix
 	// Applies perspective!
 	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(45.0f), (float)cWindowWidth / (float)cWindowHeight, 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(45.0f), (float)oglHandler.windowWidth / (float)oglHandler.windowHeight, 0.1f, 100.0f);
 
 	// Send the transformation matrix to the GPU
 	unsigned int modelLoc = glGetUniformLocation(shader.ID, "model");
@@ -201,13 +182,6 @@ int main(int argc, char* argv[])
 	// Cleanup before closing
 	glfwTerminate();
 	return 0;
-}
-
-// Create a callback function to keep the openGL viewport size synced with
-// the window size
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
 }
 
 // Handle inputs
