@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
 
 	loadOBJ(fileSystem.wdRelativePath({ "resources", "cube.obj" }), cubeVertices);
 
-	for (const auto i : cubeVertices)
+	for (const Vertex i : cubeVertices)
 	{
 		std::cout << " X: " << i.posX << " Y: " << i.posY << " Z: " << i.posZ << " R: " << i.r << " G: " << i.g << " B: " << i.b << " A: " << i.a << " texX: " << i.texX << " texY: " << i.texY << std::endl;
 	}

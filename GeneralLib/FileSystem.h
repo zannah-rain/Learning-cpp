@@ -8,29 +8,13 @@
  */
 class FileSystem
 {
-private:
-	// Paths which can't be changed by other classes
-	FilePath exePath; /** Will save the path to the executable when constructed */
-	FilePath exeDirectory; /** Will save the directory the executable is in when constructed (for easy relative paths) */
-	
-	FilePath calculateExecutablePath() const; /** Only meant to be used to initialise exePath */
-
 public:
-	// Paths which can be changed by other classes
-	FilePath workingDirectory; /** Unlike the privately saved exeDirectory, workingDirectory might change over time */
-
-
 	/**
 	 * Constructor
 	 *
 	 * Just calculates where the program is being run from and stores it so it doesn't need to be run again.
 	 */
 	FileSystem();
-
-	/**
-	 * Path separator, depends on the OS
-	 */
-	static std::string const sc_PathSep;
 
 	/**
 	 * Starting from the workingDirectory, add additional bits of file paths
@@ -57,4 +41,20 @@ public:
 	 * Just provides public read-only access to exeDirectory
 	 */
 	FilePath getExeDirectory() const;
+
+private:
+	FilePath calculateExecutablePath() const; /** Only meant to be used to initialise exePath */
+
+	// Paths which can't be changed by other classes
+	FilePath exePath; /** Will save the path to the executable when constructed */
+	FilePath exeDirectory; /** Will save the directory the executable is in when constructed (for easy relative paths) */
+
+public:
+	// Paths which can be changed by other classes
+	FilePath workingDirectory; /** Unlike the privately saved exeDirectory, workingDirectory might change over time */
+
+	/**
+	 * Path separator, depends on the OS
+	 */
+	static std::string const sc_PathSep;
 };

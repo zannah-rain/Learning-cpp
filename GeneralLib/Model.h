@@ -11,19 +11,6 @@ struct Vertex;
 */
 class Model
 {
-private:
-	unsigned int mVAO; /** Record which VAO & VBO we'll push the vertex data to the GPU with/under*/
-	unsigned int mVBO; /** Record which VAO & VBO we'll push the vertex data to the GPU with/under*/
-	Texture * mTexture; /** The texture object that the model uses */
-	unsigned int mNVertices; /** Record how many vertices are sent to the GPU for draw calls*/
-
-	unsigned short mNPositions; /** How many values in each vertex refer to position*/
-	unsigned short mNColours; /** How many values in each vertex refer to colour*/
-	unsigned short mNTextureCoords; /** How many values in each vertex refer to texture position*/
-	unsigned short mNNormalCoords; /** How many values in each vertex refer to the nomal*/
-
-	bool mWillChangeFrequently; /** Whether the VBO should be static or dynamic*/
-
 public:
 	/** Explicit constructor 
 	* @param vertices Raw vertex data
@@ -73,4 +60,17 @@ public:
 	* Draw the model!
 	*/
 	void draw();
+
+private:
+	unsigned int mVAO; /** Record which VAO & VBO we'll push the vertex data to the GPU with/under*/
+	unsigned int mVBO; /** Record which VAO & VBO we'll push the vertex data to the GPU with/under*/
+	Texture * mTexture; /** The texture object that the model uses */
+	unsigned int mNVertices; /** Record how many vertices are sent to the GPU for draw calls*/
+
+	unsigned short mNPositions; /** How many values in each vertex refer to position*/
+	unsigned short mNColours; /** How many values in each vertex refer to colour*/
+	unsigned short mNTextureCoords; /** How many values in each vertex refer to texture position*/
+	unsigned short mNNormalCoords; /** How many values in each vertex refer to the nomal*/
+
+	bool mWillChangeFrequently; /** Whether the VBO should be static or dynamic*/
 };

@@ -20,7 +20,7 @@ bool loadOBJ(
 
 	std::unique_ptr<FILE, FILEDeleter> file = make_fopen(path, "r");
 
-	if (file == NULL)
+	if (file == nullptr)
 	{
 		std::cout << "Couldn't open: " << path.toString() << std::endl;
 		return false;

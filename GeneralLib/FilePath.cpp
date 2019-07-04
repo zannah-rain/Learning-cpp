@@ -46,7 +46,7 @@ FilePath::FilePath()
 
 FilePath::FilePath(std::initializer_list<std::string> const pathParts)
 {
-	for (const auto & pathPart : pathParts)
+	for (const std::string & pathPart : pathParts)
 	{
 		addPathPart(pathPart);
 	}
@@ -94,7 +94,7 @@ std::string FilePath::toString(bool dirOnly) const
 	}
 #endif
 
-	for (auto & Folder : m_Folders)
+	for (const std::string & Folder : m_Folders)
 	{
 		full_path += Folder + FileSystem::sc_PathSep;
 	}
@@ -148,7 +148,7 @@ FilePath& FilePath::operator+= (const FilePath& rhs)
 		throw std::invalid_argument("Attempted to concatenate a static path with a relative one.");
 	}
 
-	for (const auto & Folder : rhs.m_Folders)
+	for (const std::string & Folder : rhs.m_Folders)
 	{
 		m_Folders.push_back(Folder);
 	}

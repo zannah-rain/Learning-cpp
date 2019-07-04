@@ -16,15 +16,18 @@ Model::Model(
 	unsigned int VBO,
 	bool willChangeFrequently,
 	Texture * texture) :
-	mVAO(VAO), mVBO(VBO), mTexture(texture), mNPositions(nPositions), 
-	mNColours(nColours), mNTextureCoords(nTextureCoords), mNNormalCoords(nNormalCoords),
-	mWillChangeFrequently(willChangeFrequently)
+	mVAO(VAO), 
+	mVBO(VBO), 
+	mTexture(texture), 
+	mNPositions(nPositions), 
+	mNColours(nColours), 
+	mNTextureCoords(nTextureCoords), 
+	mNNormalCoords(nNormalCoords),
+	mWillChangeFrequently(willChangeFrequently),
+	mNVertices(vertices.size() / (nPositions + nColours + nTextureCoords + nNormalCoords))
 {
 	// Send the vertices to the VBO
 	bufferData(vertices);
-
-	// Save how many vertices there are
-	mNVertices = vertices.size() / (nPositions + nColours + nTextureCoords + nNormalCoords);
 }
 
 
@@ -34,14 +37,18 @@ Model::Model(
 	unsigned int VBO,
 	bool willChangeFrequently,
 	Texture * texture) :
-	mVAO(VAO), mVBO(VBO), mTexture(texture), mNPositions(3),
-	mNColours(4), mNTextureCoords(2), mNNormalCoords(3),
-	mWillChangeFrequently(willChangeFrequently)
+	mVAO(VAO), 
+	mVBO(VBO), 
+	mTexture(texture), 
+	mNPositions(3),
+	mNColours(4), 
+	mNTextureCoords(2), 
+	mNNormalCoords(3),
+	mWillChangeFrequently(willChangeFrequently),
+	mNVertices(vertices.size())
 {
 	// Send the vertices to the VBO
 	bufferData(Vertex::toFloats(vertices));
-
-	mNVertices = vertices.size();
 }
 
 

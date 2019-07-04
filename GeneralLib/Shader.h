@@ -8,8 +8,6 @@
 class Shader
 {
 public:
-	unsigned int ID; /** The program ID */
-
 	/**
 	* Constructor reads and builds the shader
 	* 
@@ -43,4 +41,6 @@ public:
 	* @param value The value to set it to
 	*/
 	void setFloat(const std::string &name, float value) const;
+
+	unsigned int ID; /** The program ID */
 };

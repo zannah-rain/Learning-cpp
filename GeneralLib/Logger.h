@@ -20,6 +20,7 @@ public:
 	 * @return void
 	 */
 	void log(std::string const message, int const level = 0) const;
+
 private:
 	int printLevel = 0; /** Stores the minimum priority level for a message to have for it to be logged rather than ignored */
 };

@@ -39,7 +39,7 @@ FilePath FileSystem::calculateExecutablePath() const
 	std::string pathString;
 
 	// Figure out how long the path is going to be in chars, so we can allocate it ahead of time
-	length = wai_getExecutablePath(NULL, 0, &dirname_length);
+	length = wai_getExecutablePath(nullptr, 0, &dirname_length);
 	if (length > 0)
 	{
 		// Allocate the right amount of memory (returns pointer to the first bit)

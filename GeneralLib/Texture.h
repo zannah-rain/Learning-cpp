@@ -11,11 +11,7 @@ class FilePath;
 */
 class Texture
 {
-private:
-	unsigned int _texture; /** The openGL ID for the texture*/
-
 public:
-	
 	/**
 	* Construct a Texture object from a file
 	* Loads the file & pushes it to the GPU
@@ -33,4 +29,7 @@ public:
 	* Accessor for _texture
 	*/
 	unsigned int ID() const;
+
+private:
+	unsigned int _texture; /** The openGL ID for the texture*/
 };

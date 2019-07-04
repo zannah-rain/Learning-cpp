@@ -1,10 +1,11 @@
 #include "Camera.h"
 #include "glm/gtc/matrix_transform.hpp"
 
-Camera::Camera()
+Camera::Camera() :
+	cameraPos(glm::vec3(0.0f, 0.0f, 0.0f)),
+	cameraTarget(glm::vec3(0.0f, 0.0f, -1.0f))
 {
-	cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
-	cameraTarget = glm::vec3(0.0f, 0.0f, -1.0f);
+
 }
 
 glm::mat4 Camera::view() const
