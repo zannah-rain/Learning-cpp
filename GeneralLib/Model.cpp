@@ -68,7 +68,7 @@ void Model::bufferData(
 	unsigned short nPositions,
 	unsigned short nColours,
 	unsigned short nTextureCoords,
-	unsigned short nNormalCoords)
+	unsigned short nNormalCoords) const
 {
 	// Bind the VAO
 	glBindVertexArray(_VAO);

@@ -28,7 +28,7 @@ FilePath FileSystem::exeRelativePath(std::initializer_list<std::string> const pa
 	return exeDirectory + FilePath(path_parts);
 }
 
-FilePath FileSystem::calculateExecutablePath()
+FilePath FileSystem::calculateExecutablePath() const
 {
 	char* path = nullptr;
 	int length, dirname_length;

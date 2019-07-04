@@ -5,7 +5,7 @@
 
 OGLHandler::OGLHandler() : windowWidth(640), windowHeight(480) {}
 
-bool OGLHandler::init(GLFWwindow * window)
+bool OGLHandler::init(GLFWwindow * window) const
 {
 	// Set the initial dimensions of the output window for openGL
 	glViewport(0, 0, windowWidth, windowHeight);

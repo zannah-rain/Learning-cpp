@@ -41,7 +41,7 @@ public:
 		unsigned short nPositions,
 		unsigned short nColours,
 		unsigned short nTextureCoords,
-		unsigned short nNormalCoords);
+		unsigned short nNormalCoords) const;
 
 	void draw();
 };

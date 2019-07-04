@@ -18,7 +18,7 @@ public:
 	*/
 	Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
 
-	void use(); /** use/activate the shader */
+	void use() const; /** use/activate the shader */
 
 	/**
 	* Utility uniform functions

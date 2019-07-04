@@ -13,7 +13,7 @@ private:
 	FilePath exePath; /** Will save the path to the executable when constructed */
 	FilePath exeDirectory; /** Will save the directory the executable is in when constructed (for easy relative paths) */
 	
-	FilePath calculateExecutablePath(); /** Only meant to be used to initialise exePath */
+	FilePath calculateExecutablePath() const; /** Only meant to be used to initialise exePath */
 
 public:
 	// Paths which can be changed by other classes

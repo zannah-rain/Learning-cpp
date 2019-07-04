@@ -42,12 +42,12 @@ Texture::Texture(FilePath filePath)
 	}
 }
 
-void Texture::use()
+void Texture::use() const
 {
 	glBindTexture(GL_TEXTURE_2D, _texture);
 }
 
-unsigned int Texture::ID()
+unsigned int Texture::ID() const
 {
 	return _texture;
 }
