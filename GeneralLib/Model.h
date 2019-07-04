@@ -22,7 +22,7 @@ private:
 	unsigned short mNTextureCoords; /** How many values in each vertex refer to texture position*/
 	unsigned short mNNormalCoords; /** How many values in each vertex refer to the nomal*/
 
-	bool mWillChangeFrequently;
+	bool mWillChangeFrequently; /** Whether the VBO should be static or dynamic*/
 
 public:
 	/** Explicit constructor 
@@ -69,5 +69,8 @@ public:
 	*/
 	void bufferData(std::vector< float > vertices) const;
 
+	/**
+	* Draw the model!
+	*/
 	void draw();
 };

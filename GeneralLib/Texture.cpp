@@ -5,6 +5,7 @@
 #include "stb_image.h"
 #include "Texture.h"
 
+
 Texture::Texture(FilePath filePath)
 {
 	int width, height, nrChannels;
@@ -42,10 +43,12 @@ Texture::Texture(FilePath filePath)
 	}
 }
 
+
 void Texture::use() const
 {
 	glBindTexture(GL_TEXTURE_2D, _texture);
 }
+
 
 unsigned int Texture::ID() const
 {

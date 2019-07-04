@@ -2,10 +2,12 @@
 
 #include "Logger.h"
 
+
 Logger::Logger(int const initialLevel)
 {
 	printLevel = initialLevel;
 }
+
 
 void Logger::log(std::string const message, int const level) const
 {

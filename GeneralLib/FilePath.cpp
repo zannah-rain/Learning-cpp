@@ -37,10 +37,12 @@ void FilePath::addPathPart(std::string pathPart)
 	return;
 }
 
+
 FilePath::FilePath()
 {
 
 }
+
 
 FilePath::FilePath(std::initializer_list<std::string> const pathParts)
 {
@@ -49,6 +51,7 @@ FilePath::FilePath(std::initializer_list<std::string> const pathParts)
 		addPathPart(pathPart);
 	}
 }
+
 
 FilePath::FilePath(const std::string path)
 {
@@ -74,6 +77,7 @@ FilePath::FilePath(const std::string path)
 		currentSection = "";
 	}
 }
+
 
 std::string FilePath::toString(bool dirOnly) const
 {
@@ -103,25 +107,30 @@ std::string FilePath::toString(bool dirOnly) const
 	return full_path;
 }
 
+
 bool FilePath::isDirectory() const
 {
 	return m_File.empty() && !m_Folders.empty();
 }
+
 
 bool FilePath::isFile() const
 {
 	return !m_File.empty();
 }
 
+
 bool FilePath::isRelative() const
 {
 	return m_isRelative;
 }
 
+
 bool FilePath::empty() const
 {
 	return m_Folders.empty() && m_File.empty();
 }
+
 
 // Operator overloads
 FilePath& FilePath::operator+= (const FilePath& rhs)
@@ -149,6 +158,7 @@ FilePath& FilePath::operator+= (const FilePath& rhs)
 	return *this;
 }
 
+
 FilePath FilePath::operator+ (const FilePath& rhs) const
 {
 	FilePath result = *this;
@@ -156,15 +166,18 @@ FilePath FilePath::operator+ (const FilePath& rhs) const
 	return result;
 }
 
+
 bool FilePath::operator==(const FilePath& rhs) const
 {
 	return toString() == rhs.toString();
 }
 
+
 bool FilePath::operator!=(const FilePath& rhs) const
 {
 	return !(*this == rhs);
 }
+
 
 FilePath& FilePath::operator--() //prefix operator
 {
@@ -180,12 +193,14 @@ FilePath& FilePath::operator--() //prefix operator
 	return *this;
 }
 
+
 FilePath FilePath::operator--(int) //postfix operator
 {
 	FilePath currentPath = *this; // Create a copy of the current FilePath
 	--*this; // Decrement it in place
 	return currentPath; // Return the original copy for use in the original expression
 }
+
 
 unsigned int FilePath::size() const
 {

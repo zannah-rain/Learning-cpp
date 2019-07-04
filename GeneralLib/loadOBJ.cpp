@@ -6,6 +6,7 @@
 #include "wrapFILE.h"
 #include "Vertex.h"
 
+
 bool loadOBJ(
 	FilePath path,
 	std::vector< Vertex > &outVertices)

@@ -21,5 +21,10 @@ public:
 	glm::vec3 cameraRight() const; /** Axis 2*/
 	glm::vec3 cameraUp() const; /** Axis 3*/
 
-	void move(glm::vec3 translation); /** Translate the location & target */
+	/**
+	* Translate the camera from its current position
+	* 
+	* @param translation The amount to move the camera by in each dimension
+	*/
+	void move(glm::vec3 translation);
 };

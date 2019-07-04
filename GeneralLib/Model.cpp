@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "Vertex.h"
 
+
 Model::Model(
 	std::vector< float > vertices,
 	unsigned short nPositions,
@@ -26,6 +27,7 @@ Model::Model(
 	mNVertices = vertices.size() / (nPositions + nColours + nTextureCoords + nNormalCoords);
 }
 
+
 Model::Model(
 	std::vector< Vertex > vertices,
 	unsigned int VAO,
@@ -41,6 +43,7 @@ Model::Model(
 
 	mNVertices = vertices.size();
 }
+
 
 void Model::bufferData(std::vector < float > vertices) const
 {
@@ -115,6 +118,7 @@ void Model::bufferData(std::vector < float > vertices) const
 
 	glBindVertexArray(0);
 }
+
 
 void Model::draw()
 {

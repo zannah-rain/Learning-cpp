@@ -3,7 +3,9 @@
 #include "glad/glad.h"
 #include "glfw3.h"
 
+
 OGLHandler::OGLHandler() : windowWidth(640), windowHeight(480) {}
+
 
 bool OGLHandler::init(GLFWwindow * window) const
 {
@@ -21,6 +23,7 @@ bool OGLHandler::init(GLFWwindow * window) const
 
 	return true;
 }
+
 
 void OGLHandler::framebufferSizeCallback(GLFWwindow * window, int width, int height)
 {

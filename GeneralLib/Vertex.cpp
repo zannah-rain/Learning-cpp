@@ -1,5 +1,6 @@
 #include "Vertex.h"
 
+
 std::vector< float > Vertex::toFloats(std::vector< Vertex > vertices)
 {
 	std::vector< float > outVector;

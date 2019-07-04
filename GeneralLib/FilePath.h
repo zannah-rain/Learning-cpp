@@ -14,7 +14,13 @@ private:
 
 	std::vector<std::string> m_Folders; /** One entry per folder or drive, in descending order */
 	std::string m_File; /** The file name + type (if any) */
-	void addPathPart(std::string); /** Append a string to the current FilePath, detecting if it's a folder or file */
+
+	/**
+	* Append a string to the current FilePath, detecting if it's a folder or file
+	* 
+	* @param pathPart A single std::string to add
+	*/
+	void addPathPart(std::string pathPart);
 
 public:
 	// Initialisers

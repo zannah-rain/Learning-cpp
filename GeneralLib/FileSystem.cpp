@@ -9,6 +9,7 @@ std::string const FileSystem::sc_PathSep = "\\";
 std::string const FileSystem::sc_PathSep = "/";
 #endif
 
+
 FileSystem::FileSystem()
 {
 	// Directory of the .exe and initial working directory
@@ -18,15 +19,18 @@ FileSystem::FileSystem()
 	workingDirectory = exeDirectory;
 }
 
+
 FilePath FileSystem::wdRelativePath(std::initializer_list<std::string> const path_parts) const
 {
 	return workingDirectory + FilePath(path_parts);
 }
 
+
 FilePath FileSystem::exeRelativePath(std::initializer_list<std::string> const path_parts) const
 {
 	return exeDirectory + FilePath(path_parts);
 }
+
 
 FilePath FileSystem::calculateExecutablePath() const
 {
@@ -55,10 +59,12 @@ FilePath FileSystem::calculateExecutablePath() const
 	return x;
 }
 
+
 FilePath FileSystem::getExePath() const
 {
 	return exePath;
 }
+
 
 FilePath FileSystem::getExeDirectory() const
 {

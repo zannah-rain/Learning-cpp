@@ -13,6 +13,10 @@ public:
 	unsigned int windowWidth; /** The window width that openGL is currently set up to use*/
 	unsigned int windowHeight; /** The window height that openGL is currently set up to use*/
 
+	/**
+	* Default Constructor
+	* Just initialises member variables to reasonable defaults
+	*/
 	OGLHandler();
 
 	/**
