@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	Controllers controllers;
+	Controllers controllers(2);
 
 	// Creating the window
 	std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)> window(glfwCreateWindow(oglHandler.windowWidth, oglHandler.windowHeight, "LearnOpenGL", NULL, NULL), &glfwDestroyWindow);
