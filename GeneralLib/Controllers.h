@@ -6,7 +6,7 @@
 class Controllers
 {
 public:
-	Controllers();
+	Controllers(unsigned int maxPlayers);
 
 	void step();
 
@@ -18,4 +18,6 @@ public:
 private:
 	GLFWgamepadstate mPreviousState[GLFW_JOYSTICK_LAST];
 	GLFWgamepadstate mCurrentState[GLFW_JOYSTICK_LAST];
+
+	unsigned int nMaxPlayers;
 };

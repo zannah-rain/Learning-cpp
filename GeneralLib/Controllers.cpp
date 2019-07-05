@@ -3,8 +3,11 @@
 #include <iostream>
 
 
-Controllers::Controllers()
+Controllers::Controllers(unsigned int maxPlayers) :
+	nMaxPlayers(maxPlayers)
 {
+
+
 	for (size_t i = 0; i <= GLFW_JOYSTICK_LAST; i++)
 	{
 		// Initialise our states
