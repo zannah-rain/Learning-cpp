@@ -6,7 +6,9 @@
 WorldObject::WorldObject(glm::vec3 position, glm::quat rotation, Model * model) :
 	mPosition(position),
 	mRotation(rotation),
-	mpModel(model)
+	mpModel(model),
+	mSpeed(glm::vec3(0.0f, 0.0f, 0.0f)),
+	mAngularVelocity(glm::vec3(0.0f, 0.0f, 0.0f))
 {
 
 }
@@ -15,7 +17,9 @@ WorldObject::WorldObject(glm::vec3 position, glm::quat rotation, Model * model) 
 WorldObject::WorldObject(glm::vec3 position, Model * model) :
 	mPosition(position),
 	mRotation(glm::quat(0.0f, 0.0f, 0.0f, 1.0f)),
-	mpModel(model)
+	mpModel(model),
+	mSpeed(glm::vec3(0.0f, 0.0f, 0.0f)),
+	mAngularVelocity(glm::vec3(0.0f, 0.0f, 0.0f))
 {
 
 }
@@ -23,9 +27,16 @@ WorldObject::WorldObject(glm::vec3 position, Model * model) :
 
 glm::mat4 WorldObject::getModelMatrix() const
 {
-	glm::mat4 modelMatrix = glm::mat4(1.0f);
-	modelMatrix = glm::translate(modelMatrix, mPosition); // Move it to the game world!
-	modelMatrix = glm::toMat4(mRotation) * modelMatrix; // Apply rotation!
+	glm::mat4 modelMatrix, translationMatrix;
+	translationMatrix = glm::translate(glm::mat4(1.0f), mPosition);
+	modelMatrix = translationMatrix * glm::toMat4(mRotation); // Move it to the game world!
 
 	return modelMatrix;
+}
+
+
+void WorldObject::step(float deltaTime)
+{
+	mPosition += mSpeed * deltaTime;
+	mRotation *= glm::quat(mAngularVelocity * deltaTime);
 }

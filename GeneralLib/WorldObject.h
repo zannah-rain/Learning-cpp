@@ -21,7 +21,12 @@ public:
 
 	Model * mpModel; /** The model representing this objects vertices etc*/
 
-private:
+	void step(float deltaTime);
+
+protected:
 	glm::vec3 mPosition; /** The world coordinates for the center of the object*/
 	glm::quat mRotation; /** Quaternion of the current rotation of the object in the game world*/
+
+	glm::vec3 mSpeed;
+	glm::vec3 mAngularVelocity;
 };
