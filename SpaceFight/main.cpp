@@ -1,7 +1,11 @@
 #include <memory>
-#include "FileSystem.h"
+
+// glad & glfw need loading in this specific order
 #include "glad/glad.h"
 #include "glfw3.h"
+
+#include "Controllers.h"
+#include "FileSystem.h"
 #include "loadOBJ.h"
 #include "Logger.h"
 #include "Model.cpp"
@@ -48,6 +52,8 @@ int main(int argc, char* argv[])
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	Controllers controllers;
 
 	// Creating the window
 	std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)> window(glfwCreateWindow(oglHandler.windowWidth, oglHandler.windowHeight, "LearnOpenGL", NULL, NULL), &glfwDestroyWindow);
@@ -143,6 +149,8 @@ int main(int argc, char* argv[])
 		glm::mat4 modelMatrix;
 		for (std::unique_ptr< WorldObject > &i : worldObjects)
 		{
+			i->step(deltaTime);
+
 			modelMatrix = i->getModelMatrix();
 
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
@@ -152,7 +160,12 @@ int main(int argc, char* argv[])
 
 		// We have one buffer for drawing to and one to send to the screen
 		glfwSwapBuffers(window.get());
+		
+		// Poll events
 		glfwPollEvents();
+
+		// Process controller inputs
+		controllers.logEvents();
 	}
 
 	// Cleanup before closing
