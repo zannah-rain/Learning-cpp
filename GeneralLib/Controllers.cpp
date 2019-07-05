@@ -7,6 +7,10 @@ Controllers::Controllers()
 {
 	for (size_t i = 0; i <= GLFW_JOYSTICK_LAST; i++)
 	{
+		// Initialise our states
+		glfwGetGamepadState(i, &mCurrentState[i]);
+		mPreviousState[i] = mCurrentState[i];
+
 		mJoystickPresent[i] = glfwJoystickPresent(i) == GLFW_TRUE;
 		if (mJoystickPresent[i])
 		{
@@ -20,6 +24,28 @@ Controllers::Controllers()
 		if ((!mJoystickIsGamepad[i]) && mJoystickPresent[i])
 		{
 			std::cout << "Joystick " << i << " is NOT a gamepad!" << std::endl;
+		}
+	}
+}
+
+
+void Controllers::step()
+{
+	for (size_t i = 0; i <= GLFW_JOYSTICK_LAST; i++)
+	{
+		mPreviousState[i] = mCurrentState[i];
+		glfwGetGamepadState(i, &mCurrentState[i]);
+
+		if (mCurrentState[i].buttons[GLFW_GAMEPAD_BUTTON_CROSS] != mPreviousState[i].buttons[GLFW_GAMEPAD_BUTTON_CROSS])
+		{
+			if (mCurrentState[i].buttons[GLFW_GAMEPAD_BUTTON_CROSS])
+			{
+				std::cout << "Joystick " << i << " button JUST pressed: EXS" << std::endl;
+			}
+			else
+			{
+				std::cout << "Joystick " << i << " button JUST released: EXS" << std::endl;
+			}
 		}
 	}
 }

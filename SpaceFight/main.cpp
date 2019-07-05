@@ -146,6 +146,8 @@ int main(int argc, char* argv[])
 
 		glBindVertexArray(VAO);
 
+		controllers.step(); // Handle changes in controller state
+
 		glm::mat4 modelMatrix;
 		for (std::unique_ptr< WorldObject > &i : worldObjects)
 		{

@@ -19,9 +19,9 @@ public:
 
 	glm::mat4 getModelMatrix() const;
 
-	Model * mpModel; /** The model representing this objects vertices etc*/
-
 	void step(float deltaTime);
+
+	Model * mpModel; /** The model representing this objects vertices etc*/
 
 protected:
 	glm::vec3 mPosition; /** The world coordinates for the center of the object*/
