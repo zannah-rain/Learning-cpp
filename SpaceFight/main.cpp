@@ -4,7 +4,7 @@
 #include "glad/glad.h"
 #include "glfw3.h"
 
-#include "Controllers.h"
+#include "Controller.h"
 #include "FileSystem.h"
 #include "loadOBJ.h"
 #include "Logger.h"
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	Controllers controllers(2);
+	Controller controller(0, 0.1f, 0.1f, logger);
 
 	// Creating the window
 	std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)> window(glfwCreateWindow(oglHandler.windowWidth, oglHandler.windowHeight, "LearnOpenGL", NULL, NULL), &glfwDestroyWindow);
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
 
 		glBindVertexArray(VAO);
 
-		controllers.step(); // Handle changes in controller state
+		controller.step(deltaTime); // Handle changes in controller state
 
 		glm::mat4 modelMatrix;
 		for (std::unique_ptr< WorldObject > &i : worldObjects)
@@ -165,9 +165,6 @@ int main(int argc, char* argv[])
 		
 		// Poll events
 		glfwPollEvents();
-
-		// Process controller inputs
-		controllers.logEvents();
 	}
 
 	// Cleanup before closing

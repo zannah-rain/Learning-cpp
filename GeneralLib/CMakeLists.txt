@@ -25,8 +25,8 @@ add_library (GeneralLib
 	Vertex.h Vertex.cpp
 	OGLHandler.h OGLHandler.cpp
 	WorldObject.h WorldObject.cpp
-	Controllers.h Controllers.cpp
-	ControllerSignals.h)
+	Controller.h Controller.cpp
+	zMath.h zMath.cpp)
 	
 # Also it depends on GLFW
 target_link_libraries(GeneralLib glfw)
