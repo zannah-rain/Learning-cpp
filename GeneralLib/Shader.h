@@ -5,7 +5,7 @@
 #include "glad/glad.h"
 
 
-class Shader
+class C_Shader
 {
 public:
 	/**
@@ -14,7 +14,7 @@ public:
 	* @param vertexPath The file path for the vertex shader source
 	* @param fragmentPath The file path for the fragment shader source
 	*/
-	Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
+	C_Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
 
 	void use() const; /** use/activate the shader */
 
@@ -42,5 +42,5 @@ public:
 	*/
 	void setFloat(const std::string &name, float value) const;
 
-	unsigned int ID; /** The program ID */
+	unsigned int m_ID; /** The program m_ID */
 };

@@ -19,13 +19,13 @@
 void framebuffer_size_callback(GLFWwindow * window, int height, int width);
 
 // A function to handle inputs
-void processInput(GLFWwindow * window, Camera * camera, float deltaTime);
+void processInput(GLFWwindow * window, C_Camera * camera, float deltaTime);
 
 int main(int argc, char* argv[])
 {
 	Logger logger;
 	FileSystem fileSystem;
-	Camera camera;
+	C_Camera camera;
 
 	unsigned int cWindowWidth = 640;
 	unsigned int cWindowHeight = 480;
@@ -274,7 +274,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 // Handle inputs
-void processInput(GLFWwindow * window, Camera * camera, float deltaTime)
+void processInput(GLFWwindow * window, C_Camera * camera, float deltaTime)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
@@ -283,11 +283,11 @@ void processInput(GLFWwindow * window, Camera * camera, float deltaTime)
 
 	float cameraSpeed = 1.0f; // adjust accordingly
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-		camera->move(cameraSpeed * camera->up * deltaTime);
+		camera->move(cameraSpeed * camera->m_Up * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-		camera->move(-cameraSpeed * camera->up * deltaTime);
+		camera->move(-cameraSpeed * camera->m_Up * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		camera->move(cameraSpeed * camera->right * deltaTime);
+		camera->move(cameraSpeed * camera->m_Right * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-		camera->move(-cameraSpeed * camera->right * deltaTime);
+		camera->move(-cameraSpeed * camera->m_Right * deltaTime);
 }

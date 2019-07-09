@@ -6,7 +6,7 @@
 #include "Texture.h"
 
 
-Texture::Texture(FilePath filePath)
+C_Texture::C_Texture(C_FilePath filePath)
 {
 	int width, height, nrChannels;
 
@@ -44,13 +44,13 @@ Texture::Texture(FilePath filePath)
 }
 
 
-void Texture::use() const
+void C_Texture::use() const
 {
 	glBindTexture(GL_TEXTURE_2D, _texture);
 }
 
 
-unsigned int Texture::ID() const
+unsigned int C_Texture::ID() const
 {
 	return _texture;
 }

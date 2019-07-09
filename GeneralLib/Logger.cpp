@@ -3,15 +3,15 @@
 #include "Logger.h"
 
 
-Logger::Logger(int const initialLevel)
+C_Logger::C_Logger(int const initialLevel)
 {
-	printLevel = initialLevel;
+	m_PrintLevel = initialLevel;
 }
 
 
-void Logger::log(std::string const message, int const level) const
+void C_Logger::log(std::string const message, int const level) const
 {
-	if (level >= printLevel)
+	if (level >= m_PrintLevel)
 	{
 		std::cout << message << "\n";
 	}

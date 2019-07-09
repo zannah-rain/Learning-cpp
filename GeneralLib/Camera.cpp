@@ -1,35 +1,35 @@
 #include "Camera.h"
 #include "glm/gtc/matrix_transform.hpp"
 
-Camera::Camera() :
-	cameraPos(glm::vec3(0.0f, 0.0f, 0.0f)),
-	cameraTarget(glm::vec3(0.0f, 0.0f, -1.0f))
+C_Camera::C_Camera() :
+	m_CameraPos(glm::vec3(0.0f, 0.0f, 0.0f)),
+	m_CameraTarget(glm::vec3(0.0f, 0.0f, -1.0f))
 {
 
 }
 
-glm::mat4 Camera::view() const
+glm::mat4 C_Camera::view() const
 {
-	return glm::lookAt(cameraPos, cameraTarget, up);
+	return glm::lookAt(m_CameraPos, m_CameraTarget, m_Up);
 }
 
-glm::vec3 Camera::cameraForwards() const
+glm::vec3 C_Camera::cameraForwards() const
 {
-	return glm::normalize(cameraTarget - cameraPos);
+	return glm::normalize(m_CameraTarget - m_CameraPos);
 }
 
-glm::vec3 Camera::cameraUp() const
+glm::vec3 C_Camera::cameraUp() const
 {
 	return glm::cross(-cameraForwards(), cameraRight());
 }
 
-glm::vec3 Camera::cameraRight() const
+glm::vec3 C_Camera::cameraRight() const
 {
-	return glm::normalize(glm::cross(up, -cameraForwards()));
+	return glm::normalize(glm::cross(m_Up, -cameraForwards()));
 }
 
-void Camera::move(glm::vec3 translation)
+void C_Camera::move(glm::vec3 translation)
 {
-	cameraPos += translation;
-	cameraTarget += translation;
+	m_CameraPos += translation;
+	m_CameraTarget += translation;
 }

@@ -9,8 +9,8 @@ TEST_CASE("FilePath works as expected", "[FilePath]")
 		std::string xString = R"(\foo\bar\)";
 		std::string yString = R"(\foo\bar\foo.txt)";
 
-		FilePath x = xString;
-		FilePath y = yString;
+		C_FilePath x = xString;
+		C_FilePath y = yString;
 
 		REQUIRE(x.toString() == xString);
 		REQUIRE(x.isRelative());
@@ -30,8 +30,8 @@ TEST_CASE("FilePath works as expected", "[FilePath]")
 		std::string xString = R"(C:\foo\bar\)";
 		std::string yString = R"(Z:\foo\bar\foo.txt)";
 
-		FilePath x = xString;
-		FilePath y = yString;
+		C_FilePath x = xString;
+		C_FilePath y = yString;
 
 		REQUIRE(x.toString() == xString);
 		REQUIRE(!x.isRelative());
@@ -48,15 +48,15 @@ TEST_CASE("FilePath works as expected", "[FilePath]")
 
 	SECTION("List constructor works")
 	{
-		FilePath x = { "foo", "bar" };
+		C_FilePath x = { "foo", "bar" };
 		
 		REQUIRE(x.toString() == R"(\foo\bar\)");
-		REQUIRE(FilePath({ "foo", "bar" }).toString() == x.toString());
+		REQUIRE(C_FilePath({ "foo", "bar" }).toString() == x.toString());
 	}
 
 	SECTION("toString with & without file works")
 	{
-		FilePath x = R"(\foo\bar\foo.bar)";
+		C_FilePath x = R"(\foo\bar\foo.bar)";
 
 		REQUIRE(x.toString(false) == R"(\foo\bar\foo.bar)");
 		REQUIRE(x.toString(true) == R"(\foo\bar\)");
@@ -67,10 +67,10 @@ TEST_CASE("FilePath works as expected", "[FilePath]")
 		std::string xString = R"(C:\foo\bar\)";
 		std::string yString = R"(foo\bar\foo.txt)";
 
-		FilePath x = xString + yString;
-		FilePath a = xString;
-		FilePath b = yString;
-		FilePath y;
+		C_FilePath x = xString + yString;
+		C_FilePath a = xString;
+		C_FilePath b = yString;
+		C_FilePath y;
 		y = a + b;
 
 		REQUIRE(x.toString() == y.toString());
@@ -82,9 +82,9 @@ TEST_CASE("FilePath works as expected", "[FilePath]")
 
 	SECTION("operator-- overloads work")
 	{
-		FilePath x = R"(\foo\bar.txt)";
-		FilePath xCopy = x;
-		FilePath y = R"(\foo\)";
+		C_FilePath x = R"(\foo\bar.txt)";
+		C_FilePath xCopy = x;
+		C_FilePath y = R"(\foo\)";
 
 		REQUIRE(x-- == xCopy);
 		REQUIRE(x != xCopy);

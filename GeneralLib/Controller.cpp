@@ -6,59 +6,59 @@
 #include "zMath.h"
 
 
-Controller::Controller(unsigned int inputID, 
+C_Controller::C_Controller(unsigned int inputID, 
 					   float axisSensitivity, 
 					   float triggerSensitivity,
-					   Logger logger) :
-	mInputID(inputID),
-	mAxisSensitivity(axisSensitivity),
-	mTriggerSensitivity(triggerSensitivity),
+					   C_Logger logger) :
+	m_InputID(inputID),
+	m_AxisSensitivity(axisSensitivity),
+	m_TriggerSensitivity(triggerSensitivity),
 	m_Logger(logger),
-	mJoystickValid(false)
+	m_JoystickValid(false)
 {
-	// Sets mCurrentState AND mJoystickValid
-	mJoystickValid = glfwGetGamepadState(inputID, &mCurrentState);
+	// Sets m_CurrentState AND m_JoystickValid
+	m_JoystickValid = glfwGetGamepadState(inputID, &m_CurrentState);
 
-	// Initialise mButtonHeldTime
+	// Initialise m_ButtonHeldTime
 	for (size_t i = 0; i <= GLFW_GAMEPAD_BUTTON_LAST; i++)
 	{
-		mButtonHeldTime[i] = 0;
+		m_ButtonHeldTime[i] = 0;
 	}
 
 
 	// Connect signals to internal logger
-	Connected.connect(&Controller::logConnected, this);
-	Disconnected.connect(&Controller::logDisconnected, this);
+	SIG_Connected.connect(&C_Controller::logConnected, this);
+	SIG_Disconnected.connect(&C_Controller::logDisconnected, this);
 
 	for (size_t i = 0; i <= GLFW_GAMEPAD_BUTTON_LAST; i++)
 	{
-		ButtonPressed[i].connect(&Controller::logButtonPressed, this);
-		ButtonReleased[i].connect(&Controller::logButtonReleased, this);
-		ButtonHeld[i].connect(&Controller::logButtonHeld, this);
+		SIG_ButtonPressed[i].connect(&C_Controller::logButtonPressed, this);
+		SIG_ButtonReleased[i].connect(&C_Controller::logButtonReleased, this);
+		SIG_ButtonHeld[i].connect(&C_Controller::logButtonHeld, this);
 	}
 
-	LeftAxisHeld.connect(&Controller::logLeftAxisHeld, this);
-	RightAxisHeld.connect(&Controller::logRightAxisHeld, this);
-	LeftTriggerHeld.connect(&Controller::logLeftTriggerHeld, this);
-	RightTriggerHeld.connect(&Controller::logRightTriggerHeld, this);
+	SIG_LeftAxisHeld.connect(&C_Controller::logLeftAxisHeld, this);
+	SIG_RightAxisHeld.connect(&C_Controller::logRightAxisHeld, this);
+	SIG_LeftTriggerHeld.connect(&C_Controller::logLeftTriggerHeld, this);
+	SIG_RightTriggerHeld.connect(&C_Controller::logRightTriggerHeld, this);
 }
 
 
-void Controller::step(float deltaTime)
+void C_Controller::step(float deltaTime)
 {
 	// Set previous state before updating current state
-	GLFWgamepadstate mPreviousState = mCurrentState;
+	GLFWgamepadstate mPreviousState = m_CurrentState;
 
 	// Sets current state and returns whether the controller is connected & a gamepad
-	bool mJoystickPreviouslyValid = mJoystickValid;
-	mJoystickValid = glfwGetGamepadState(mInputID, &mCurrentState);
+	bool mJoystickPreviouslyValid = m_JoystickValid;
+	m_JoystickValid = glfwGetGamepadState(m_InputID, &m_CurrentState);
 
-	if (!mJoystickValid)
+	if (!m_JoystickValid)
 	{
 		// Check if we need to send a disconnection event
 		if (mJoystickPreviouslyValid)
 		{
-			Disconnected();
+			SIG_Disconnected();
 		}
 		return;
 	}
@@ -66,25 +66,25 @@ void Controller::step(float deltaTime)
 	// Check if we need to send a connection event
 	if (!mJoystickPreviouslyValid)
 	{
-		Connected();
+		SIG_Connected();
 		return; // Other comparisons with previous state don't really make sense if we've just connected it
 	}
 
 	// Send button signals
 	for (size_t i = 0; i <= GLFW_GAMEPAD_BUTTON_LAST; i++)
 	{
-		if (mCurrentState.buttons[i])
+		if (m_CurrentState.buttons[i])
 		{
 			// Update how long the buttons been held for
-			mButtonHeldTime[i] += deltaTime;
+			m_ButtonHeldTime[i] += deltaTime;
 
-			// Send ButtonHeld signal
-			ButtonHeld[i](mButtonHeldTime[i]);
+			// Send SIG_ButtonHeld signal
+			SIG_ButtonHeld[i](m_ButtonHeldTime[i]);
 
-			// See if we should send ButtonPressed
+			// See if we should send SIG_ButtonPressed
 			if (!mPreviousState.buttons[i])
 			{
-				ButtonPressed[i]();
+				SIG_ButtonPressed[i]();
 			}
 		}
 		else
@@ -92,93 +92,93 @@ void Controller::step(float deltaTime)
 			// See if the button has just been released
 			if (mPreviousState.buttons[i])
 			{
-				ButtonReleased[i](mButtonHeldTime[i]);
-				mButtonHeldTime[i] = 0;
+				SIG_ButtonReleased[i](m_ButtonHeldTime[i]);
+				m_ButtonHeldTime[i] = 0;
 			}
 		}
 	}
 
 	// Send axis signals
-	if (zMath::abs(mCurrentState.axes[GLFW_GAMEPAD_AXIS_LEFT_X]) > mAxisSensitivity ||
-		zMath::abs(mCurrentState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]) > mAxisSensitivity)
+	if (zMath::abs(m_CurrentState.axes[GLFW_GAMEPAD_AXIS_LEFT_X]) > m_AxisSensitivity ||
+		zMath::abs(m_CurrentState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]) > m_AxisSensitivity)
 	{
-		LeftAxisHeld(mCurrentState.axes[GLFW_GAMEPAD_AXIS_LEFT_X], mCurrentState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
+		SIG_LeftAxisHeld(m_CurrentState.axes[GLFW_GAMEPAD_AXIS_LEFT_X], m_CurrentState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
 	}
 
 	// Send axis signals
-	if (zMath::abs(mCurrentState.axes[GLFW_GAMEPAD_AXIS_RIGHT_X]) > mAxisSensitivity ||
-		zMath::abs(mCurrentState.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]) > mAxisSensitivity)
+	if (zMath::abs(m_CurrentState.axes[GLFW_GAMEPAD_AXIS_RIGHT_X]) > m_AxisSensitivity ||
+		zMath::abs(m_CurrentState.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]) > m_AxisSensitivity)
 	{
-		RightAxisHeld(mCurrentState.axes[GLFW_GAMEPAD_AXIS_RIGHT_X], mCurrentState.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]);
+		SIG_RightAxisHeld(m_CurrentState.axes[GLFW_GAMEPAD_AXIS_RIGHT_X], m_CurrentState.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]);
 	}
 
 	// Send trigger signals
-	if (mCurrentState.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER] > -1 + mTriggerSensitivity)
+	if (m_CurrentState.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER] > -1 + m_TriggerSensitivity)
 	{
-		LeftTriggerHeld(mCurrentState.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER]);
+		SIG_LeftTriggerHeld(m_CurrentState.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER]);
 	}
-	if (mCurrentState.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER] > -1 + mTriggerSensitivity)
+	if (m_CurrentState.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER] > -1 + m_TriggerSensitivity)
 	{
-		RightTriggerHeld(mCurrentState.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER]);
+		SIG_RightTriggerHeld(m_CurrentState.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER]);
 	}
 }
 
 
-bool Controller::isValid()
+bool C_Controller::isValid()
 {
-	return glfwJoystickIsGamepad(mInputID);
+	return glfwJoystickIsGamepad(m_InputID);
 }
 
 
-void Controller::logConnected() const
+void C_Controller::logConnected() const
 {
 	m_Logger.log("Controller connected");
 }
 
 
-void Controller::logDisconnected() const
+void C_Controller::logDisconnected() const
 {
 	m_Logger.log("Controller disconnected");
 }
 
 
-void Controller::logButtonPressed() const
+void C_Controller::logButtonPressed() const
 {
 	m_Logger.log("Button pressed");
 }
 
 
-void Controller::logButtonReleased(float timeHeld) const
+void C_Controller::logButtonReleased(float timeHeld) const
 {
 	m_Logger.log("Button released: " + std::to_string(timeHeld));
 }
 
 
-void Controller::logButtonHeld(float timeHeld) const
+void C_Controller::logButtonHeld(float timeHeld) const
 {
 	m_Logger.log("Button held: " + std::to_string(timeHeld));
 }
 
 
-void Controller::logLeftAxisHeld(float x, float y) const
+void C_Controller::logLeftAxisHeld(float x, float y) const
 {
 	m_Logger.log("Left axis held: " + std::to_string(x) + ", " + std::to_string(y));
 }
 
 
-void Controller::logRightAxisHeld(float x, float y) const
+void C_Controller::logRightAxisHeld(float x, float y) const
 {
 	m_Logger.log("Right axis held: " + std::to_string(x) + ", " + std::to_string(y));
 }
 
 
-void Controller::logLeftTriggerHeld(float amountDepressed) const
+void C_Controller::logLeftTriggerHeld(float amountDepressed) const
 {
 	m_Logger.log("Left trigger held: " + std::to_string(amountDepressed));
 }
 
 
-void Controller::logRightTriggerHeld(float amountDepressed) const
+void C_Controller::logRightTriggerHeld(float amountDepressed) const
 {
 	m_Logger.log("Right trigger held: " + std::to_string(amountDepressed));
 }

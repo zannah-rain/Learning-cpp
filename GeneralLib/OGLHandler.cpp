@@ -4,13 +4,13 @@
 #include "glfw3.h"
 
 
-OGLHandler::OGLHandler() : windowWidth(640), windowHeight(480) {}
+C_OGLHandler::C_OGLHandler() : m_WindowWidth(640), m_WindowHeight(480) {}
 
 
-bool OGLHandler::init(GLFWwindow * window) const
+bool C_OGLHandler::init(GLFWwindow * window) const
 {
 	// Set the initial dimensions of the output window for openGL
-	glViewport(0, 0, windowWidth, windowHeight);
+	glViewport(0, 0, m_WindowWidth, m_WindowHeight);
 
 	// Set the framebuffer size callback in glfw to update the above viewport
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
@@ -25,7 +25,7 @@ bool OGLHandler::init(GLFWwindow * window) const
 }
 
 
-void OGLHandler::framebufferSizeCallback(GLFWwindow * window, int width, int height)
+void C_OGLHandler::framebufferSizeCallback(GLFWwindow * window, int width, int height)
 {
 	// Update the viewport with the new size
 	glViewport(0, 0, width, height);

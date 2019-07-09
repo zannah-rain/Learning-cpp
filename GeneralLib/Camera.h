@@ -3,10 +3,10 @@
 #include "glm/glm.hpp"
 
 
-class Camera
+class C_Camera
 {
 public:
-	Camera();
+	C_Camera();
 
 	glm::mat4 view() const; /** The view matrix for this camera*/
 
@@ -23,10 +23,10 @@ public:
 
 
 
-	const glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); /** No rotation along the z axis yet */
-	const glm::vec3 right = glm::vec3(1.0f, 0.0f, 0.0f);
-	const glm::vec3 forward = glm::vec3(0.0f, 0.0f, 1.0f);
+	const glm::vec3 m_Up = glm::vec3(0.0f, 1.0f, 0.0f); /** No rotation along the z axis yet */
+	const glm::vec3 m_Right = glm::vec3(1.0f, 0.0f, 0.0f);
+	const glm::vec3 m_Forward = glm::vec3(0.0f, 0.0f, 1.0f);
 
-	glm::vec3 cameraPos; /** Where the camera is located*/
-	glm::vec3 cameraTarget; /** What location the camera is pointing to*/
+	glm::vec3 m_CameraPos; /** Where the camera is located*/
+	glm::vec3 m_CameraTarget; /** What location the camera is pointing to*/
 };

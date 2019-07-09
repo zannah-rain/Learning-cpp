@@ -3,7 +3,7 @@
 #include "FilePath.h"
 
 // Forward declarations
-struct Vertex;
+struct S_Vertex;
 
 /**
 * Load a .obj file
@@ -13,4 +13,4 @@ struct Vertex;
 *
 * @return Whether the operation was a success or not
 */
-bool loadOBJ(FilePath path,	std::vector< Vertex > &outVertices);
+bool loadOBJ(C_FilePath path, std::vector< S_Vertex > &outVertices);

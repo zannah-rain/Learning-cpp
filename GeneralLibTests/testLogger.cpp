@@ -3,7 +3,7 @@
 
 TEST_CASE("Logger works as expected", "[FileSystem]")
 {
-	Logger x;
+	C_Logger x;
 
 	x.log("test");
 }

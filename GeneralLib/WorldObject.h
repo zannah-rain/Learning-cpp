@@ -6,27 +6,27 @@
 #include "glm/gtc/quaternion.hpp"
 #include "glm/gtx/quaternion.hpp"
 
-class Model;
+class C_Model;
 
 /**
 * A basic superclass for instances which have a presence somewhere in the game world.
 */
-class WorldObject
+class C_WorldObject
 {
 public:
-	WorldObject(glm::vec3 position, glm::quat rotation, Model * model);
-	WorldObject(glm::vec3 position, Model * model);
+	C_WorldObject(glm::vec3 position, glm::quat rotation, C_Model * model);
+	C_WorldObject(glm::vec3 position, C_Model * model);
 
 	glm::mat4 getModelMatrix() const;
 
 	void step(float deltaTime);
 
-	Model * mpModel; /** The model representing this objects vertices etc*/
+	C_Model * mp_Model; /** The model representing this objects vertices etc*/
 
 protected:
-	glm::vec3 mPosition; /** The world coordinates for the center of the object*/
-	glm::quat mRotation; /** Quaternion of the current rotation of the object in the game world*/
+	glm::vec3 m_Position; /** The world coordinates for the center of the object*/
+	glm::quat m_Rotation; /** Quaternion of the current rotation of the object in the game world*/
 
-	glm::vec3 mSpeed;
-	glm::vec3 mAngularVelocity;
+	glm::vec3 m_Speed;
+	glm::vec3 m_AngularVelocity;
 };

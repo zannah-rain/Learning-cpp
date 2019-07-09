@@ -4,35 +4,35 @@
 #include "whereami.h"
 
 #ifdef _WIN32
-std::string const FileSystem::sc_PathSep = "\\";
+std::string const C_FileSystem::sc_PathSep = "\\";
 #else
-std::string const FileSystem::sc_PathSep = "/";
+std::string const C_FileSystem::sc_PathSep = "/";
 #endif
 
 
-FileSystem::FileSystem()
+C_FileSystem::C_FileSystem()
 {
 	// Directory of the .exe and initial working directory
-	exePath = calculateExecutablePath();
-	exeDirectory = FilePath(exePath.toString(true));
+	m_ExePath = calculateExecutablePath();
+	m_ExeDirectory = C_FilePath(m_ExePath.toString(true));
 
-	workingDirectory = exeDirectory;
+	m_WorkingDirectory = m_ExeDirectory;
 }
 
 
-FilePath FileSystem::wdRelativePath(std::initializer_list<std::string> const path_parts) const
+C_FilePath C_FileSystem::wdRelativePath(std::initializer_list<std::string> const path_parts) const
 {
-	return workingDirectory + FilePath(path_parts);
+	return m_WorkingDirectory + C_FilePath(path_parts);
 }
 
 
-FilePath FileSystem::exeRelativePath(std::initializer_list<std::string> const path_parts) const
+C_FilePath C_FileSystem::exeRelativePath(std::initializer_list<std::string> const path_parts) const
 {
-	return exeDirectory + FilePath(path_parts);
+	return m_ExeDirectory + C_FilePath(path_parts);
 }
 
 
-FilePath FileSystem::calculateExecutablePath() const
+C_FilePath C_FileSystem::calculateExecutablePath() const
 {
 	char* path = nullptr;
 	int length, dirname_length;
@@ -54,19 +54,19 @@ FilePath FileSystem::calculateExecutablePath() const
 		free(path);
 	}
 
-	FilePath x = pathString;
+	C_FilePath x = pathString;
 
 	return x;
 }
 
 
-FilePath FileSystem::getExePath() const
+C_FilePath C_FileSystem::getExePath() const
 {
-	return exePath;
+	return m_ExePath;
 }
 
 
-FilePath FileSystem::getExeDirectory() const
+C_FilePath C_FileSystem::getExeDirectory() const
 {
-	return exeDirectory;
+	return m_ExeDirectory;
 }

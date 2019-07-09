@@ -8,8 +8,8 @@
 
 
 bool loadOBJ(
-	FilePath path,
-	std::vector< Vertex > &outVertices)
+	C_FilePath path,
+	std::vector< S_Vertex > &outVertices)
 {
 	// Store the results in temporary variables
 	// Don't want to modify anything until we've done checks
@@ -18,7 +18,7 @@ bool loadOBJ(
 	std::vector< glm::vec2 > temp_uvs;
 	std::vector< glm::vec3 > temp_normals;
 
-	std::unique_ptr<FILE, FILEDeleter> file = make_fopen(path, "r");
+	std::unique_ptr<FILE, S_FILEDeleter> file = make_fopen(path, "r");
 
 	if (file == nullptr)
 	{
@@ -55,7 +55,7 @@ bool loadOBJ(
 		{
 			// "vt" means it's a texture coordinate!
 			glm::vec2 uv;
-			// Texture coordinates only have x & y at the moment :)
+			// C_Texture coordinates only have x & y at the moment :)
 			fscanf_s(file.get(), "%f %f\n", &uv.x, &uv.y);
 			temp_uvs.push_back(uv);
 		}
@@ -90,7 +90,7 @@ bool loadOBJ(
 
 	for (unsigned int i = 0; i < vertexIndices.size(); i++)
 	{
-		Vertex vertex;
+		S_Vertex vertex;
 		
 		vertex.posX = temp_vertices[vertexIndices[i] - 1].x;
 		vertex.posY = temp_vertices[vertexIndices[i] - 1].y;

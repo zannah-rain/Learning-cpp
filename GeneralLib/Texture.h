@@ -3,22 +3,22 @@
 #include <memory>
 
 // Forward declarations
-class FilePath;
+class C_FilePath;
 
 
 /**
 * Encapsulates CPU & GPU operations for a single texture object
 */
-class Texture
+class C_Texture
 {
 public:
 	/**
-	* Construct a Texture object from a file
+	* Construct a C_Texture object from a file
 	* Loads the file & pushes it to the GPU
 	* 
 	* @param filePath The file path to the physical resource to use as a texture
 	*/
-	Texture(FilePath filePath);
+	C_Texture(C_FilePath filePath);
 
 	/**
 	* Bind this texture in openGL

@@ -6,7 +6,7 @@
 #include "Vertex.h"
 
 
-Model::Model(
+C_Model::C_Model(
 	std::vector< float > vertices,
 	unsigned short nPositions,
 	unsigned short nColours,
@@ -15,51 +15,51 @@ Model::Model(
 	unsigned int VAO,
 	unsigned int VBO,
 	bool willChangeFrequently,
-	Texture * texture) :
-	mVAO(VAO), 
-	mVBO(VBO), 
-	mTexture(texture), 
-	mNPositions(nPositions), 
-	mNColours(nColours), 
-	mNTextureCoords(nTextureCoords), 
-	mNNormalCoords(nNormalCoords),
-	mWillChangeFrequently(willChangeFrequently),
-	mNVertices(vertices.size() / (nPositions + nColours + nTextureCoords + nNormalCoords))
+	C_Texture * texture) :
+	m_VAO(VAO), 
+	m_VBO(VBO), 
+	m_Texture(texture), 
+	m_NumPositions(nPositions), 
+	m_NumColours(nColours), 
+	m_NumTextureCoords(nTextureCoords), 
+	m_NumNormalCoords(nNormalCoords),
+	m_WillChangeFrequently(willChangeFrequently),
+	m_NumVertices(vertices.size() / (nPositions + nColours + nTextureCoords + nNormalCoords))
 {
 	// Send the vertices to the VBO
 	bufferData(vertices);
 }
 
 
-Model::Model(
-	std::vector< Vertex > vertices,
+C_Model::C_Model(
+	std::vector< S_Vertex > vertices,
 	unsigned int VAO,
 	unsigned int VBO,
 	bool willChangeFrequently,
-	Texture * texture) :
-	mVAO(VAO), 
-	mVBO(VBO), 
-	mTexture(texture), 
-	mNPositions(3),
-	mNColours(4), 
-	mNTextureCoords(2), 
-	mNNormalCoords(3),
-	mWillChangeFrequently(willChangeFrequently),
-	mNVertices(vertices.size())
+	C_Texture * texture) :
+	m_VAO(VAO), 
+	m_VBO(VBO), 
+	m_Texture(texture), 
+	m_NumPositions(3),
+	m_NumColours(4), 
+	m_NumTextureCoords(2), 
+	m_NumNormalCoords(3),
+	m_WillChangeFrequently(willChangeFrequently),
+	m_NumVertices(vertices.size())
 {
 	// Send the vertices to the VBO
-	bufferData(Vertex::toFloats(vertices));
+	bufferData(S_Vertex::toFloats(vertices));
 }
 
 
-void Model::bufferData(std::vector < float > vertices) const
+void C_Model::bufferData(std::vector < float > vertices) const
 {
 	// Bind the VAO
-	glBindVertexArray(mVAO);
+	glBindVertexArray(m_VAO);
 	// Bind the VBO
-	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
-	if (mWillChangeFrequently)
+	if (m_WillChangeFrequently)
 	{
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_DYNAMIC_DRAW);
 	}
@@ -70,56 +70,56 @@ void Model::bufferData(std::vector < float > vertices) const
 	
 
 	unsigned short currentOffset = 0;
-	if (mNPositions > 0)
+	if (m_NumPositions > 0)
 	{
 		glVertexAttribPointer(
 			0, // Which vertex attribute we want to configure, we used location = 0 in the shader
-			mNPositions, // The size of the vertex attribute, we used vec3 in the shader
+			m_NumPositions, // The size of the vertex attribute, we used vec3 in the shader
 			GL_FLOAT, // The type of the data
 			GL_FALSE, // Do we want the data to be normalized
-			(mNPositions + mNColours + mNTextureCoords + mNNormalCoords) * sizeof(float), // The distance between each set of vertex attributes
+			(m_NumPositions + m_NumColours + m_NumTextureCoords + m_NumNormalCoords) * sizeof(float), // The distance between each set of vertex attributes
 			(void*)(currentOffset * sizeof(float)) // The offset of where the position data begins in the buffer
 		);
-		currentOffset += mNPositions;
+		currentOffset += m_NumPositions;
 		glEnableVertexAttribArray(0);
 	}
-	if (mNColours > 0)
+	if (m_NumColours > 0)
 	{
 		glVertexAttribPointer(
 			1, // Which vertex attribute we want to configure, we used location = 1 in the shader
-			mNColours, // The size of the vertex attribute, we used vec3 in the shader
+			m_NumColours, // The size of the vertex attribute, we used vec3 in the shader
 			GL_FLOAT, // The type of the data
 			GL_FALSE, // Do we want the data to be normalized
-			(mNPositions + mNColours + mNTextureCoords + mNNormalCoords) * sizeof(float), // The distance between each set of vertex attributes
+			(m_NumPositions + m_NumColours + m_NumTextureCoords + m_NumNormalCoords) * sizeof(float), // The distance between each set of vertex attributes
 			(void*)(currentOffset * sizeof(float)) // The offset of where the position data begins in the buffer
 		);
-		currentOffset += mNColours;
+		currentOffset += m_NumColours;
 		glEnableVertexAttribArray(1);
 	}
-	if (mNTextureCoords > 0)
+	if (m_NumTextureCoords > 0)
 	{
 		glVertexAttribPointer(
 			2, // Which vertex attribute we want to configure, we used location = 1 in the shader
-			mNTextureCoords, // The size of the vertex attribute, we used vec3 in the shader
+			m_NumTextureCoords, // The size of the vertex attribute, we used vec3 in the shader
 			GL_FLOAT, // The type of the data
 			GL_FALSE, // Do we want the data to be normalized
-			(mNPositions + mNColours + mNTextureCoords + mNNormalCoords) * sizeof(float), // The distance between each set of vertex attributes
+			(m_NumPositions + m_NumColours + m_NumTextureCoords + m_NumNormalCoords) * sizeof(float), // The distance between each set of vertex attributes
 			(void*)(currentOffset * sizeof(float)) // The offset of where the position data begins in the buffer
 		);
-		currentOffset += mNTextureCoords;
+		currentOffset += m_NumTextureCoords;
 		glEnableVertexAttribArray(2);
 	}
-	if (mNNormalCoords > 0)
+	if (m_NumNormalCoords > 0)
 	{
 		glVertexAttribPointer(
 			3, // Which vertex attribute we want to configure, we used location = 1 in the shader
-			mNNormalCoords, // The size of the vertex attribute, we used vec3 in the shader
+			m_NumNormalCoords, // The size of the vertex attribute, we used vec3 in the shader
 			GL_FLOAT, // The type of the data
 			GL_FALSE, // Do we want the data to be normalized
-			(mNPositions + mNColours + mNTextureCoords + mNNormalCoords) * sizeof(float), // The distance between each set of vertex attributes
+			(m_NumPositions + m_NumColours + m_NumTextureCoords + m_NumNormalCoords) * sizeof(float), // The distance between each set of vertex attributes
 			(void*)(currentOffset * sizeof(float)) // The offset of where the position data begins in the buffer
 		);
-		currentOffset += mNNormalCoords;
+		currentOffset += m_NumNormalCoords;
 		glEnableVertexAttribArray(3);
 	}
 
@@ -127,7 +127,7 @@ void Model::bufferData(std::vector < float > vertices) const
 }
 
 
-void Model::draw()
+void C_Model::draw()
 {
-	glDrawArrays(GL_TRIANGLES, 0, mNVertices);
+	glDrawArrays(GL_TRIANGLES, 0, m_NumVertices);
 }

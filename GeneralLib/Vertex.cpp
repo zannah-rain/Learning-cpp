@@ -1,13 +1,13 @@
 #include "Vertex.h"
 
 
-std::vector< float > Vertex::toFloats(std::vector< Vertex > vertices)
+std::vector< float > S_Vertex::toFloats(std::vector< S_Vertex > vertices)
 {
 	std::vector< float > outVector;
 
 	for (size_t i = 0; i < vertices.size(); i++)
 	{
-		// Position, Colour, Texture, Normal
+		// Position, Colour, C_Texture, Normal
 		outVector.push_back(vertices[i].posX);
 		outVector.push_back(vertices[i].posY);
 		outVector.push_back(vertices[i].posZ);
