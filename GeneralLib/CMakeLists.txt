@@ -10,10 +10,10 @@ else (OPENGL_FOUND)
 endif()
 
 # Create a dll
-add_library (GeneralLib 
-	FilePath.h FilePath.cpp 
-	FileSystem.h FileSystem.cpp 
-	Logger.h Logger.cpp 
+add_library (GeneralLib
+	FilePath.h FilePath.cpp
+	FileSystem.h FileSystem.cpp
+	Logger.h Logger.cpp
 	whereami.h whereami.c
 	Shader.h Shader.cpp
 	stb_image_implementation.cpp
@@ -24,16 +24,16 @@ add_library (GeneralLib
 	loadOBJ.h loadOBJ.cpp
 	Vertex.h Vertex.cpp
 	OGLHandler.h OGLHandler.cpp
-	WorldObject.h WorldObject.cpp
 	Controller.h Controller.cpp
 	zMath.h zMath.cpp
-	ComponentManager.h ComponentManager.cpp
+	ComponentManager.h
 	Entity.h Entity.cpp
 	S_ModelComponent.h S_ModelComponent.cpp
 	S_PlayerStatsComponent.h
 	S_PositionComponent.h
 	S_RotationComponent.h
-	S_ShipStatsComponent.h)
+	S_ShipStatsComponent.h
+	S_MomentumComponent.h S_MomentumComponent.cpp)
 	
 # Also it depends on GLFW
 target_link_libraries(GeneralLib glfw)
