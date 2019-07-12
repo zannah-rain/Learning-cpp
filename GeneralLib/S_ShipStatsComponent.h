@@ -2,14 +2,14 @@
 
 struct S_ShipStatsComponent
 {
-	float currentHealth;
-	float maxHealth;
+	float m_CurrentHealth;
+	float m_MaxHealth;
 
-	float currentShield;
-	float maxShield;
+	float m_CurrentShield;
+	float m_MaxShield;
 
-	float forwardThrust; /** How much force can be applied forwards (not for rotating / sideways) */
-	float manouveringThrust; /** How much force can be applied to turn / sideways */
-	float maxSpeed; /** Can go faster but takes damage */
-	float maxSpin; /** Can spin faster but takes damage */
+	float m_ForwardThrust; /** How much force can be applied forwards (not for rotating / sideways) */
+	float m_ManouveringThrust; /** How much force can be applied to turn / sideways */
+	float m_MaxSpeed; /** Can go faster but takes damage */
+	float m_MaxSpin; /** Can spin faster but takes damage */
 };
