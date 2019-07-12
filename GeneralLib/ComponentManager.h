@@ -44,7 +44,7 @@ public:
 	*/
 	void addComponent(unsigned int uniqueID, T newComponent)
 	{
-		m_Components[uniqueID] = newComponent;
+		m_Components.insert({ uniqueID, newComponent });
 	}
 
 	/**
