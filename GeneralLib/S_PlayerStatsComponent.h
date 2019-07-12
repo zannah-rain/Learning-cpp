@@ -2,5 +2,7 @@
 
 struct S_PlayerStatsComponent
 {
-	unsigned int playerID;
+	S_PlayerStatsComponent(unsigned int playerID);
+
+	unsigned int m_PlayerID;
 };
