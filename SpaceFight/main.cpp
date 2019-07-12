@@ -1,13 +1,11 @@
-#include <forward_list>
 #include <memory>
 
 // glad & glfw need loading in this specific order
 #include "glad/glad.h"
 #include "glfw3.h"
 
-#include "ComponentManager.h"
 #include "Controller.h"
-#include "Entity.h"
+#include "EntityComponentSystem.h"
 #include "FileSystem.h"
 #include "loadOBJ.h"
 #include "Logger.h"
@@ -17,12 +15,6 @@
 #include "Texture.h"
 #include "Camera.h"
 #include "Vertex.h"
-
-// Component definitions
-#include "S_ModelComponent.h"
-#include "S_MomentumComponent.h"
-#include "S_PositionComponent.h"
-#include "S_RotationComponent.h"
 
 #include <iostream>
 
@@ -128,19 +120,21 @@ int main(int argc, char* argv[])
 	unsigned int viewLoc = glGetUniformLocation(shader.m_ID, "view");
 	unsigned int projectionLoc = glGetUniformLocation(shader.m_ID, "projection");
 
-	C_ComponentManager< S_PositionComponent > positionComponentManager;
-	C_ComponentManager< S_RotationComponent > rotationComponentManager;
-	C_ComponentManager< S_ModelComponent > modelComponentManager;
-	C_ComponentManager< S_MomentumComponent > momentumComponentManager;
 
-	std::forward_list < S_Entity > entityList;
-	S_ModelComponent thisModelComponent(&cubeModel);
-	S_MomentumComponent thisMomentumComponent(glm::vec3(0.0f, 0.0f, -0.1f), glm::vec3(0.1f, 0.1f, 0.2f), 0.0f);
-	entityList.emplace_front();
-	positionComponentManager.addComponent(entityList.front());
-	rotationComponentManager.addComponent(entityList.front());
-	modelComponentManager.addComponent(entityList.front(), thisModelComponent);
-	momentumComponentManager.addComponent(entityList.front(), thisMomentumComponent);
+	C_EntityComponentSystem ECS(modelLoc);
+
+	{
+		unsigned int cubeID = ECS.newEntity();
+
+		ECS.m_PositionComponents.addComponent(cubeID);
+		ECS.m_RotationComponents.addComponent(cubeID);
+
+		S_ModelComponent thisModelComponent(&cubeModel);
+		S_MomentumComponent thisMomentumComponent(glm::vec3(0.0f, 0.0f, -0.1f), glm::vec3(0.1f, 0.1f, 0.2f), 0.0f);
+
+		ECS.m_ModelComponents.addComponent(cubeID, thisModelComponent);
+		ECS.m_MomentumComponents.addComponent(cubeID, thisMomentumComponent);
+	}	
 
 	// The projection matrix is constant so we can send it before the render loop
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
@@ -169,36 +163,7 @@ int main(int argc, char* argv[])
 
 		controller.step(deltaTime); // Handle changes in controller state
 
-		glm::mat4 modelMatrix;
-		for (S_Entity const & i : entityList)
-		{
-			// Draw system
-			if (positionComponentManager.hasComponent(i) &&
-				modelComponentManager.hasComponent(i))
-			{
-				// Move from model space to world space
-				modelMatrix = glm::translate(glm::mat4(1.0f), positionComponentManager.getComponent(i).m_Position);
-
-				// Apply rotation if it has the rotationComponent
-				if (rotationComponentManager.hasComponent(i))
-				{
-					modelMatrix = modelMatrix * glm::toMat4(rotationComponentManager.getComponent(i).m_Rotation);
-
-					// Apply momentum if we have all the above + MomentumComponent
-					if (momentumComponentManager.hasComponent(i))
-					{
-						positionComponentManager.getComponent(i).m_Position += momentumComponentManager.getComponent(i).m_Speed * deltaTime;
-						rotationComponentManager.getComponent(i).m_Rotation *= glm::quat(momentumComponentManager.getComponent(i).m_AngularVelocity * deltaTime);
-					}
-				}
-				
-				// Send the modelMatrix to the GPU
-				glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-
-				// Draw the model
-				modelComponentManager.getComponent(i).m_Model->draw();
-			}
-		}
+		ECS.step(deltaTime);
 
 		// We have one buffer for drawing to and one to send to the screen
 		glfwSwapBuffers(window.get());
