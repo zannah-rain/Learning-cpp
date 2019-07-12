@@ -26,7 +26,14 @@ add_library (GeneralLib
 	OGLHandler.h OGLHandler.cpp
 	WorldObject.h WorldObject.cpp
 	Controller.h Controller.cpp
-	zMath.h zMath.cpp)
+	zMath.h zMath.cpp
+	ComponentManager.h ComponentManager.cpp
+	Entity.h Entity.cpp
+	S_ModelComponent.h S_ModelComponent.cpp
+	S_PlayerStatsComponent.h
+	S_PositionComponent.h
+	S_RotationComponent.h
+	S_ShipStatsComponent.h)
 	
 # Also it depends on GLFW
 target_link_libraries(GeneralLib glfw)

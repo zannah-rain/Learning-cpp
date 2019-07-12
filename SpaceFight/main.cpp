@@ -1,10 +1,13 @@
+#include <forward_list>
 #include <memory>
 
 // glad & glfw need loading in this specific order
 #include "glad/glad.h"
 #include "glfw3.h"
 
+#include "ComponentManager.h"
 #include "Controller.h"
+#include "Entity.h"
 #include "FileSystem.h"
 #include "loadOBJ.h"
 #include "Logger.h"
@@ -14,7 +17,11 @@
 #include "Texture.h"
 #include "Camera.h"
 #include "Vertex.h"
-#include "WorldObject.h"
+
+// Component definitions
+#include "S_ModelComponent.h"
+#include "S_PositionComponent.h"
+#include "S_RotationComponent.h"
 
 #include <iostream>
 
@@ -23,6 +30,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/string_cast.hpp"
+#include "glm/gtc/quaternion.hpp"
+#include "glm/gtx/quaternion.hpp"
 
 // A callback function we'll use for changing the openGL viewport size
 void framebuffer_size_callback(GLFWwindow * window, int height, int width);
@@ -118,8 +127,16 @@ int main(int argc, char* argv[])
 	unsigned int viewLoc = glGetUniformLocation(shader.m_ID, "view");
 	unsigned int projectionLoc = glGetUniformLocation(shader.m_ID, "projection");
 
-	std::vector< std::unique_ptr< C_WorldObject > > worldObjects;
-	worldObjects.push_back(std::make_unique< C_WorldObject >(glm::vec3(0.0f, 0.0f, 0.0f), &cubeModel));
+	C_ComponentManager< S_PositionComponent > positionComponentManager;
+	C_ComponentManager< S_RotationComponent > rotationComponentManager;
+	C_ComponentManager< S_ModelComponent > modelComponentManager;
+
+	std::forward_list < S_Entity > entityList;
+	S_ModelComponent thisModelComponent(&cubeModel);
+	entityList.emplace_front();
+	positionComponentManager.addComponent(entityList.front().m_ID);
+	rotationComponentManager.addComponent(entityList.front().m_ID);
+	modelComponentManager.addComponent(entityList.front().m_ID, thisModelComponent);
 
 	// The projection matrix is constant so we can send it before the render loop
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
@@ -149,15 +166,27 @@ int main(int argc, char* argv[])
 		controller.step(deltaTime); // Handle changes in controller state
 
 		glm::mat4 modelMatrix;
-		for (std::unique_ptr< C_WorldObject > &i : worldObjects)
+		for (S_Entity const & i : entityList)
 		{
-			i->step(deltaTime);
+			// Draw system
+			if (positionComponentManager.hasComponent(i.m_ID) &&
+				modelComponentManager.hasComponent(i.m_ID))
+			{
+				// Move from model space to world space
+				modelMatrix = glm::translate(glm::mat4(1.0f), positionComponentManager.getComponent(i.m_ID).m_Position);
 
-			modelMatrix = i->getModelMatrix();
+				// Apply rotation if it has the rotationComponent
+				if (rotationComponentManager.hasComponent(i.m_ID))
+				{
+					modelMatrix = modelMatrix * glm::toMat4(rotationComponentManager.getComponent(i.m_ID).m_Rotation);
+				}
+				
+				// Send the modelMatrix to the GPU
+				glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-
-			i->mp_Model->draw();
+				// Draw the model
+				modelComponentManager.getComponent(i.m_ID).m_Model->draw();
+			}
 		}
 
 		// We have one buffer for drawing to and one to send to the screen
