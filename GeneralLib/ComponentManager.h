@@ -31,7 +31,7 @@ public:
 	* @param uniqueID The ID to check for a component of
 	* @return true if the S_Entity.m_ID is registered with this C_ComponentManager
 	*/
-	bool hasComponent(unsigned int uniqueID)
+	bool hasComponent(unsigned int uniqueID) const
 	{
 		return m_Components.count(uniqueID) == 1;
 	}

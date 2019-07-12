@@ -137,10 +137,10 @@ int main(int argc, char* argv[])
 	S_ModelComponent thisModelComponent(&cubeModel);
 	S_MomentumComponent thisMomentumComponent(glm::vec3(0.0f, 0.0f, -0.1f), glm::vec3(0.1f, 0.1f, 0.2f), 0.0f);
 	entityList.emplace_front();
-	positionComponentManager.addComponent(entityList.front().m_ID);
-	rotationComponentManager.addComponent(entityList.front().m_ID);
-	modelComponentManager.addComponent(entityList.front().m_ID, thisModelComponent);
-	momentumComponentManager.addComponent(entityList.front().m_ID, thisMomentumComponent);
+	positionComponentManager.addComponent(entityList.front());
+	rotationComponentManager.addComponent(entityList.front());
+	modelComponentManager.addComponent(entityList.front(), thisModelComponent);
+	momentumComponentManager.addComponent(entityList.front(), thisMomentumComponent);
 
 	// The projection matrix is constant so we can send it before the render loop
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
@@ -173,22 +173,22 @@ int main(int argc, char* argv[])
 		for (S_Entity const & i : entityList)
 		{
 			// Draw system
-			if (positionComponentManager.hasComponent(i.m_ID) &&
-				modelComponentManager.hasComponent(i.m_ID))
+			if (positionComponentManager.hasComponent(i) &&
+				modelComponentManager.hasComponent(i))
 			{
 				// Move from model space to world space
-				modelMatrix = glm::translate(glm::mat4(1.0f), positionComponentManager.getComponent(i.m_ID).m_Position);
+				modelMatrix = glm::translate(glm::mat4(1.0f), positionComponentManager.getComponent(i).m_Position);
 
 				// Apply rotation if it has the rotationComponent
-				if (rotationComponentManager.hasComponent(i.m_ID))
+				if (rotationComponentManager.hasComponent(i))
 				{
-					modelMatrix = modelMatrix * glm::toMat4(rotationComponentManager.getComponent(i.m_ID).m_Rotation);
+					modelMatrix = modelMatrix * glm::toMat4(rotationComponentManager.getComponent(i).m_Rotation);
 
 					// Apply momentum if we have all the above + MomentumComponent
-					if (momentumComponentManager.hasComponent(i.m_ID))
+					if (momentumComponentManager.hasComponent(i))
 					{
-						positionComponentManager.getComponent(i.m_ID).m_Position += momentumComponentManager.getComponent(i.m_ID).m_Speed * deltaTime;
-						rotationComponentManager.getComponent(i.m_ID).m_Rotation *= glm::quat(momentumComponentManager.getComponent(i.m_ID).m_AngularVelocity * deltaTime);
+						positionComponentManager.getComponent(i).m_Position += momentumComponentManager.getComponent(i).m_Speed * deltaTime;
+						rotationComponentManager.getComponent(i).m_Rotation *= glm::quat(momentumComponentManager.getComponent(i).m_AngularVelocity * deltaTime);
 					}
 				}
 				
@@ -196,7 +196,7 @@ int main(int argc, char* argv[])
 				glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
 				// Draw the model
-				modelComponentManager.getComponent(i.m_ID).m_Model->draw();
+				modelComponentManager.getComponent(i).m_Model->draw();
 			}
 		}
 

@@ -8,10 +8,15 @@
 struct S_Entity
 {
 public:
-	/*
+	/**
 	* Basic constructor, just makes sure to iterate s_NextID
 	*/
 	S_Entity();
+
+	/**
+	* Allows implicit conversion to unsigned int
+	*/
+	operator unsigned int() const;
 	
 	unsigned int m_ID; /** The unique ID of this entity*/
 
