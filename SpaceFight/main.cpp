@@ -20,6 +20,7 @@
 
 // Component definitions
 #include "S_ModelComponent.h"
+#include "S_MomentumComponent.h"
 #include "S_PositionComponent.h"
 #include "S_RotationComponent.h"
 
@@ -130,13 +131,16 @@ int main(int argc, char* argv[])
 	C_ComponentManager< S_PositionComponent > positionComponentManager;
 	C_ComponentManager< S_RotationComponent > rotationComponentManager;
 	C_ComponentManager< S_ModelComponent > modelComponentManager;
+	C_ComponentManager< S_MomentumComponent > momentumComponentManager;
 
 	std::forward_list < S_Entity > entityList;
 	S_ModelComponent thisModelComponent(&cubeModel);
+	S_MomentumComponent thisMomentumComponent(glm::vec3(0.0f, 0.0f, -0.1f), glm::vec3(0.1f, 0.1f, 0.2f), 0.0f);
 	entityList.emplace_front();
 	positionComponentManager.addComponent(entityList.front().m_ID);
 	rotationComponentManager.addComponent(entityList.front().m_ID);
 	modelComponentManager.addComponent(entityList.front().m_ID, thisModelComponent);
+	momentumComponentManager.addComponent(entityList.front().m_ID, thisMomentumComponent);
 
 	// The projection matrix is constant so we can send it before the render loop
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
@@ -179,6 +183,13 @@ int main(int argc, char* argv[])
 				if (rotationComponentManager.hasComponent(i.m_ID))
 				{
 					modelMatrix = modelMatrix * glm::toMat4(rotationComponentManager.getComponent(i.m_ID).m_Rotation);
+
+					// Apply momentum if we have all the above + MomentumComponent
+					if (momentumComponentManager.hasComponent(i.m_ID))
+					{
+						positionComponentManager.getComponent(i.m_ID).m_Position += momentumComponentManager.getComponent(i.m_ID).m_Speed * deltaTime;
+						rotationComponentManager.getComponent(i.m_ID).m_Rotation *= glm::quat(momentumComponentManager.getComponent(i.m_ID).m_AngularVelocity * deltaTime);
+					}
 				}
 				
 				// Send the modelMatrix to the GPU
