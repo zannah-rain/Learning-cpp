@@ -4,13 +4,10 @@
 
 #include "glm/glm.hpp"
 
-#include "ComponentManager.h"
+#include "ComponentManager.inl"
 #include "Entity.h"
 
-#include "S_ModelComponent.h"
-#include "S_MomentumComponent.h"
-#include "S_PositionComponent.h"
-#include "S_RotationComponent.h"
+#include "Components/Components.h"
 
 class C_EntityComponentSystem
 {
