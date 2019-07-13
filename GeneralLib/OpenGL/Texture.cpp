@@ -1,9 +1,10 @@
 #include <iostream>
 
-#include "FilePath.h"
 #include "glad/glad.h"
 #include "stb_image.h"
-#include "Texture.h"
+
+#include "FileSystem\FilePath.h"
+#include "OpenGL\Texture.h"
 
 
 C_Texture::C_Texture(C_FilePath filePath)

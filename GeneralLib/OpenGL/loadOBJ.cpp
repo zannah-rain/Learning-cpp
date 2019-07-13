@@ -2,9 +2,10 @@
 #include <fstream>
 
 #include "glm/glm.hpp"
-#include "loadOBJ.h"
-#include "wrapFILE.h"
-#include "Vertex.h"
+
+#include "FileSystem\wrapFILE.h"
+#include "OpenGL\loadOBJ.h"
+#include "OpenGL\Vertex.h"
 
 
 bool loadOBJ(

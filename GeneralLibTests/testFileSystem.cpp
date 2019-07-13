@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "FileSystem.h"
+#include "FileSystem\FileSystem.h"
 
 // For each SECTION, TEST_CASE is run from the start
 

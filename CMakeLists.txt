@@ -1,6 +1,9 @@
 # Minimum CMake version
 cmake_minimum_required (VERSION 2.8.11)
 
+# utility functions
+include(build/utils.cmake)
+
 # Define overall project name
 project (PersonalStuff)
 

@@ -1,6 +1,9 @@
 #include "catch.hpp"
-#include "FilePath.h"
+
 #include <string>
+
+#include "FileSystem\FilePath.h"
+
 
 TEST_CASE("FilePath works as expected", "[FilePath]")
 {

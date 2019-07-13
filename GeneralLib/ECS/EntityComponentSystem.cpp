@@ -7,7 +7,7 @@
 #include "glm/gtc/quaternion.hpp"
 #include "glm/gtx/quaternion.hpp"
 
-#include "Model.h"
+#include "OpenGL/Model.h"
 
 
 C_EntityComponentSystem::C_EntityComponentSystem(unsigned int modelShaderLocation)

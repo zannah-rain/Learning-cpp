@@ -5,16 +5,16 @@
 #include "glfw3.h"
 
 #include "Controller.h"
-#include "EntityComponentSystem.h"
-#include "FileSystem.h"
-#include "loadOBJ.h"
+#include "ECS\EntityComponentSystem.h"
+#include "FileSystem\FileSystem.h"
+#include "OpenGL\loadOBJ.h"
 #include "Logger.h"
-#include "Model.cpp"
-#include "OGLHandler.h"
-#include "Shader.h"
-#include "Texture.h"
-#include "Camera.h"
-#include "Vertex.h"
+#include "OpenGL\Model.cpp"
+#include "OpenGL\OGLHandler.h"
+#include "OpenGL\Shader.h"
+#include "OpenGL\Texture.h"
+#include "OpenGL\Camera.h"
+#include "OpenGL\Vertex.h"
 
 #include <iostream>
 

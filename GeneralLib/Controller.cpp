@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-#include "zMath.h"
+#include "Math\zMath.h"
 
 
 C_Controller::C_Controller(unsigned int inputID, 

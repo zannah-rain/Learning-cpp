@@ -9,31 +9,21 @@ else (OPENGL_FOUND)
 	message("opengl not found")
 endif()
 
+# files
+###########
+file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/*.h ${CMAKE_CURRENT_SOURCE_DIR}/*.inl)
+file(GLOB_RECURSE sources ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+file(GLOB_RECURSE c_sources ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
+
+list (APPEND projectFiles ${headers})
+list (APPEND projectFiles ${sources})
+list (APPEND projectFiles ${c_sources})
+
 # Create a dll
-add_library (GeneralLib
-	FilePath.h FilePath.cpp
-	FileSystem.h FileSystem.cpp
-	Logger.h Logger.cpp
-	whereami.h whereami.c
-	Shader.h Shader.cpp
-	stb_image_implementation.cpp
-	Texture.h Texture.cpp
-	Camera.h Camera.cpp
-	Model.h Model.cpp
-	wrapFILE.h wrapFILE.cpp
-	loadOBJ.h loadOBJ.cpp
-	Vertex.h Vertex.cpp
-	OGLHandler.h OGLHandler.cpp
-	Controller.h Controller.cpp
-	zMath.h zMath.cpp
-	ComponentManager.h
-	Entity.h Entity.cpp
-	S_ModelComponent.h S_ModelComponent.cpp
-	S_PlayerStatsComponent.h
-	S_PositionComponent.h
-	S_RotationComponent.h
-	S_ShipStatsComponent.h
-	S_MomentumComponent.h S_MomentumComponent.cpp)
+add_library (GeneralLib ${sources} ${c_sources} ${headers})
+
+# Mirror directory structure in VS
+assign_source_group(${projectFiles})
 	
 # Also it depends on GLFW
 target_link_libraries(GeneralLib glfw)
