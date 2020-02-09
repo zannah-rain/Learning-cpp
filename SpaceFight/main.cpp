@@ -5,7 +5,7 @@
 #include "glfw3.h"
 
 #include "Controller.h"
-#include "ECS\EntityComponentSystem.h"
+#include "ECS\World.h"
 #include "FileSystem\FileSystem.h"
 #include "OpenGL\loadOBJ.h"
 #include "Logger.h"
@@ -25,6 +25,13 @@
 #include "glm/gtx/string_cast.hpp"
 #include "glm/gtc/quaternion.hpp"
 #include "glm/gtx/quaternion.hpp"
+
+// ECS stuff
+#include "Systems/C_MomentumSystem.h"
+#include "Components/S_PositionComponent.h"
+#include "Components/S_RotationComponent.h"
+#include "Components/S_ModelComponent.h"
+#include "Components/S_MomentumComponent.h"
 
 // A callback function we'll use for changing the openGL viewport size
 void framebuffer_size_callback(GLFWwindow * window, int height, int width);
@@ -121,19 +128,16 @@ int main(int argc, char* argv[])
 	unsigned int projectionLoc = glGetUniformLocation(shader.m_ID, "projection");
 
 
-	C_EntityComponentSystem ECS(modelLoc);
+	C_World ECS;
+	ECS.addSystem< C_MomentumSystem >(ECS, modelLoc);
 
 	{
 		unsigned int cubeID = ECS.newEntity();
 
-		ECS.m_PositionComponents.addComponent(cubeID);
-		ECS.m_RotationComponents.addComponent(cubeID);
-
-		S_ModelComponent thisModelComponent(&cubeModel);
-		S_MomentumComponent thisMomentumComponent(glm::vec3(0.0f, 0.0f, -0.1f), glm::vec3(0.1f, 0.1f, 0.2f), 0.0f);
-
-		ECS.m_ModelComponents.addComponent(cubeID, thisModelComponent);
-		ECS.m_MomentumComponents.addComponent(cubeID, thisMomentumComponent);
+		ECS.addComponent< S_PositionComponent >(cubeID, S_PositionComponent());
+		ECS.addComponent < S_RotationComponent >(cubeID, S_RotationComponent());
+		ECS.addComponent < S_ModelComponent >(cubeID, S_ModelComponent(&cubeModel));
+		ECS.addComponent < S_MomentumComponent >(cubeID, S_MomentumComponent(glm::vec3(0.0f, 0.0f, -0.1f), glm::vec3(0.1f, 0.1f, 0.2f), 0.0f));
 	}	
 
 	// The projection matrix is constant so we can send it before the render loop

@@ -1,4 +1,4 @@
-#include "E_Components.h"
+#pragma once
 
 #include "S_CommandComponent.h"
 #include "S_ModelComponent.h"

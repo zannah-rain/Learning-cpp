@@ -12,8 +12,21 @@ else (OPENGL_FOUND)
 	message("opengl not found")
 endif()
 
+# files
+###########
+file(GLOB_RECURSE headers ${CMAKE_CURRENT_SOURCE_DIR}/*.h ${CMAKE_CURRENT_SOURCE_DIR}/*.inl)
+file(GLOB_RECURSE sources ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+file(GLOB_RECURSE c_sources ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
+
+list (APPEND projectFiles ${headers})
+list (APPEND projectFiles ${sources})
+list (APPEND projectFiles ${c_sources})
+
+# Mirror directory structure in VS
+assign_source_group(${projectFiles})
+
 # Create a .exe
-add_executable(SpaceFight main.cpp glad.c)
+add_executable(SpaceFight ${sources} ${c_sources} ${headers})
 
 # It depends on the .dll made in a previous project
 target_link_libraries(SpaceFight GeneralLib)

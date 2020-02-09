@@ -19,7 +19,7 @@ list (APPEND projectFiles ${headers})
 list (APPEND projectFiles ${sources})
 list (APPEND projectFiles ${c_sources})
 
-# Create a dll
+# Create a static library
 add_library (GeneralLib ${sources} ${c_sources} ${headers})
 
 # Mirror directory structure in VS
