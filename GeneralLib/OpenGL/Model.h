@@ -23,15 +23,15 @@ public:
 	* @param willChangeFrequently Whether it's expected that these values will need to be resent to the GPU regularly
 	* @param texture Pointer to the C_Texture to use when shading
 	*/
-	C_Model(std::vector< float > vertices, 
-		    unsigned short nPositions,
-		    unsigned short nColours,
-		    unsigned short nTextureCoords,
-		    unsigned short nNormalCoords,
-		    unsigned int VAO, 
-		    unsigned int VBO, 
-		    bool willChangeFrequently,
-		    C_Texture * texture);
+	C_Model::C_Model(std::vector< float > vertices, 
+					 unsigned short nPositions,
+					 unsigned short nColours,
+					 unsigned short nTextureCoords,
+					 unsigned short nNormalCoords,
+					 unsigned int VAO, 
+					 unsigned int VBO, 
+					 bool willChangeFrequently,
+					 C_Texture * texture);
 
 	/** Standard constructor
 	* @param vertices S_Vertex data for the model
@@ -43,6 +43,15 @@ public:
 	C_Model::C_Model(std::vector< S_Vertex > vertices,
 					 unsigned int VAO,
 					 unsigned int VBO,
+					 bool willChangeFrequently,
+					 C_Texture * texture);
+
+	/** Minimal constructor
+	* @param vertices S_Vertex data for the model
+	* @param willChangeFrequently Whether it's expected that these values will need to be resent to the GPU regularly
+	* @param texture Pointer to the C_Texture to use when shading
+	*/
+	C_Model::C_Model(std::vector< S_Vertex > vertices,
 					 bool willChangeFrequently,
 					 C_Texture * texture);
 

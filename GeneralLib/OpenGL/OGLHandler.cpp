@@ -3,6 +3,8 @@
 #include "glad/glad.h"
 #include "glfw3.h"
 
+#include <iostream>
+
 
 C_OGLHandler::C_OGLHandler() : m_WindowWidth(640), m_WindowHeight(480) {}
 
@@ -11,15 +13,19 @@ bool C_OGLHandler::init(GLFWwindow * window) const
 {
 	// Set the initial dimensions of the output window for openGL
 	glViewport(0, 0, m_WindowWidth, m_WindowHeight);
+	std::cout << "C_OGLHandler:: OpenGL viewport initialised with dimensions: " << m_WindowWidth << "x" << m_WindowHeight << std::endl;
 
 	// Set the framebuffer size callback in glfw to update the above viewport
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+	std::cout << "C_OGLHandler:: Registered framebufferSizeCallback with glfw" << std::endl;
 
 	// Enable depth testing
 	glEnable(GL_DEPTH_TEST);
+	std::cout << "C_OGLHandler:: Enabled OpenGL depth testing" << std::endl;
 
 	// Set the "clear" color we'll overwrite previous frames with before drawing
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+	std::cout << "C_OGLHandler:: Set OpenGL clear colour to 1.0, 0.0, 1.0, 1.0" << std::endl;
 
 	return true;
 }

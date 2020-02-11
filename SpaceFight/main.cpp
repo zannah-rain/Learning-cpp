@@ -87,22 +87,9 @@ int main(int argc, char* argv[])
 
 	oglHandler.init(window.get()); // Initialise global openGL stuff
 
-	// Create a S_Vertex Array Object to store a bunch of configurations
-	unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
-
-	// Create our S_Vertex Buffer Object, to pass vertices to the GPU
-	unsigned int VBO;
-	glGenBuffers(1, &VBO); // Creates a bunch of buffers
-
 	std::vector< S_Vertex > cubeVertices;
 
 	loadOBJ(fileSystem.wdRelativePath({ "resources", "cube.obj" }), cubeVertices);
-
-	for (const S_Vertex i : cubeVertices)
-	{
-		std::cout << " X: " << i.posX << " Y: " << i.posY << " Z: " << i.posZ << " R: " << i.r << " G: " << i.g << " B: " << i.b << " A: " << i.a << " texX: " << i.texX << " texY: " << i.texY << std::endl;
-	}
 
 	// Set up and apply our shader (only one so doesn't need to be in the render loop)
 	C_Shader shader(fileSystem.wdRelativePath({ "resources", "3dVertexShader.glsl" }).toString().c_str(), 
@@ -111,7 +98,7 @@ int main(int argc, char* argv[])
 
 	C_Texture tex(fileSystem.wdRelativePath({ "resources", "roguelikeSheet_magenta.bmp" }));
 
-	C_Model cubeModel(cubeVertices, VAO, VBO, false, &tex);
+	C_Model cubeModel(cubeVertices, false, &tex);
 
 	// View matrix
 	// Transforms everything relative to the camera position & rotation
@@ -135,9 +122,9 @@ int main(int argc, char* argv[])
 		unsigned int cubeID = ECS.newEntity();
 
 		ECS.addComponent< S_PositionComponent >(cubeID, S_PositionComponent());
-		ECS.addComponent < S_RotationComponent >(cubeID, S_RotationComponent());
-		ECS.addComponent < S_ModelComponent >(cubeID, S_ModelComponent(&cubeModel));
-		ECS.addComponent < S_MomentumComponent >(cubeID, S_MomentumComponent(glm::vec3(0.0f, 0.0f, -0.1f), glm::vec3(0.1f, 0.1f, 0.2f), 0.0f));
+		ECS.addComponent< S_RotationComponent >(cubeID, S_RotationComponent());
+		ECS.addComponent< S_ModelComponent >(cubeID, S_ModelComponent(&cubeModel));
+		ECS.addComponent< S_MomentumComponent >(cubeID, S_MomentumComponent(glm::vec3(0.0f, 0.0f, -0.1f), glm::vec3(0.1f, 0.1f, 0.2f), 0.0f));
 	}	
 
 	// The projection matrix is constant so we can send it before the render loop
@@ -162,8 +149,6 @@ int main(int argc, char* argv[])
 		// Create the view matrix from the camera
 		view = camera.view();
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-		glBindVertexArray(VAO);
 
 		controller.step(deltaTime); // Handle changes in controller state
 

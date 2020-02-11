@@ -107,5 +107,7 @@ bool loadOBJ(
 		outVertices.push_back(vertex);
 	}
 
+	std::cout << "loadOBJ:: Successfully loaded " << vertexIndices.size() << " vertices from .obj file at: " << path.toString() << std::endl;
+
 	return true;
 }

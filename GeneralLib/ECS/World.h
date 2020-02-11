@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -79,6 +80,7 @@ public:
 	template< class T, class... Args >
 	void addSystem(Args&&... args)
 	{
+		std::cout << "C_World:: Registered System " << m_Systems.size() << std::endl;
 		I_System * p_BasePointer = new T(std::forward< Args >(args)...);
 		m_Systems.push_back(std::unique_ptr< I_System >(p_BasePointer));
 	}
@@ -119,6 +121,7 @@ private:
 	template< class T >
 	std::size_t registerNewComponentType()
 	{
+		std::cout << "C_World:: Registered Component Type " << m_NumComponentTypesRegistered << std::endl;
 		m_ComponentPools.push_back(std::make_unique< C_ComponentPool<T> >());
 		return m_NumComponentTypesRegistered++;
 	}

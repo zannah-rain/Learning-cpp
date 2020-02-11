@@ -52,11 +52,32 @@ C_Model::C_Model(
 }
 
 
+C_Model::C_Model(
+	std::vector< S_Vertex > vertices,
+	bool willChangeFrequently,
+	C_Texture * texture)
+	: m_VAO(0)
+	, m_VBO(0)
+	, m_Texture(texture)
+	, m_NumPositions(3)
+	, m_NumColours(4)
+	, m_NumTextureCoords(2)
+	, m_NumNormalCoords(3)
+	, m_WillChangeFrequently(willChangeFrequently)
+	, m_NumVertices(vertices.size())
+{
+	glGenVertexArrays(1, &m_VAO);
+	glGenBuffers(1, &m_VBO);
+
+	// Send the vertices to the VBO
+	bufferData(S_Vertex::toFloats(vertices));
+}
+
+
 void C_Model::bufferData(std::vector < float > vertices) const
 {
-	// Bind the VAO
-	glBindVertexArray(m_VAO);
-	// Bind the VBO
+	// VBO STUFF
+	// Bind the VBO (The raw vertex data)
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
 	if (m_WillChangeFrequently)
@@ -68,6 +89,9 @@ void C_Model::bufferData(std::vector < float > vertices) const
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 	}
 	
+	// VAO STUFF
+	// Bind the VAO (Metadata about how to interpret the raw vertex data)
+	glBindVertexArray(m_VAO);
 
 	unsigned short currentOffset = 0;
 	if (m_NumPositions > 0)
@@ -124,10 +148,19 @@ void C_Model::bufferData(std::vector < float > vertices) const
 	}
 
 	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 
 void C_Model::draw()
 {
+	// Bind the VBO & VAO
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+	glBindVertexArray(m_VAO);
+
 	glDrawArrays(GL_TRIANGLES, 0, m_NumVertices);
+
+	// Reset the GL_ARRAY_BUFFER buffer
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
