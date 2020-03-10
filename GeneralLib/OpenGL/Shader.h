@@ -56,4 +56,8 @@ public:
 	void    SetMatrix4(const GLchar *name, const glm::mat4 &matrix, GLboolean useShader = false);
 
 	unsigned int m_ID; /** The program m_ID */
+
+private:
+	// Checks if compilation or linking failed and if so, print the error logs
+	void    checkCompileErrors(GLuint object, std::string type);
 };
