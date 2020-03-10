@@ -4,6 +4,8 @@
 
 #include "shader.h"
 
+#include "glm/gtc/type_ptr.hpp"
+
 
 C_Shader::C_Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 {
@@ -109,4 +111,46 @@ void C_Shader::setInt(const std::string &name, int value) const
 void C_Shader::setFloat(const std::string &name, float value) const
 {
 	glUniform1f(glGetUniformLocation(m_ID, name.c_str()), value);
+}
+
+
+void C_Shader::SetVector2f(const GLchar *name, GLfloat x, GLfloat y, GLboolean useShader)
+{
+	glUniform2f(glGetUniformLocation(m_ID, name), x, y);
+}
+
+
+void C_Shader::SetVector2f(const GLchar *name, const glm::vec2 &value, GLboolean useShader)
+{
+	glUniform2f(glGetUniformLocation(m_ID, name), value.x, value.y);
+}
+
+
+void C_Shader::SetVector3f(const GLchar *name, GLfloat x, GLfloat y, GLfloat z, GLboolean useShader)
+{
+	glUniform3f(glGetUniformLocation(m_ID, name), x, y, z);
+}
+
+
+void C_Shader::SetVector3f(const GLchar *name, const glm::vec3 &value, GLboolean useShader)
+{
+	glUniform3f(glGetUniformLocation(m_ID, name), value.x, value.y, value.z);
+}
+
+
+void C_Shader::SetVector4f(const GLchar *name, GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLboolean useShader)
+{
+	glUniform4f(glGetUniformLocation(m_ID, name), x, y, z, w);
+}
+
+
+void C_Shader::SetVector4f(const GLchar *name, const glm::vec4 &value, GLboolean useShader)
+{
+	glUniform4f(glGetUniformLocation(m_ID, name), value.x, value.y, value.z, value.w);
+}
+
+
+void C_Shader::SetMatrix4(const GLchar *name, const glm::mat4 &matrix, GLboolean useShader)
+{
+	glUniformMatrix4fv(glGetUniformLocation(m_ID, name), 1, GL_FALSE, glm::value_ptr(matrix));
 }
