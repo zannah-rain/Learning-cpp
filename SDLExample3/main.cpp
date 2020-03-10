@@ -4,14 +4,14 @@
 #include <memory>
 #include <string>
 #include <iostream>
-#include "FileSystem.h"
+#include "FileSystem/FileSystem.h"
 #include "Logger.h"
 #include "Quit.h"
 
 int main(int argc, char* argv[])
 {
-	Logger logger;
-	FileSystem fileSystem;
+	C_Logger logger;
+	C_FileSystem fileSystem;
 	SDL_Event event;
 
 	const int SCREEN_WIDTH = 640;
@@ -30,10 +30,10 @@ int main(int argc, char* argv[])
 		logger.log("SDL initialised");
 	}
 	
-	logger.log("Initial working directory: " + fileSystem.workingDirectory.toString());
+	logger.log("Initial working directory: " + fileSystem.m_WorkingDirectory.toString());
 	logger.log("Executable directory: " + fileSystem.getExeDirectory().toString());
-	fileSystem.workingDirectory--; // Set workingDirectory to the project folder, we aren't going to look for files in /bin/ very often
-	logger.log("New working directory: " + fileSystem.workingDirectory.toString());
+	fileSystem.m_WorkingDirectory--; // Set workingDirectory to the project folder, we aren't going to look for files in /bin/ very often
+	logger.log("New working directory: " + fileSystem.m_WorkingDirectory.toString());
 
 	// Open a window
 
@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
 	}
 
 	// Load a .bmp
-	FilePath imagePath = fileSystem.wdRelativePath({ "resources", "roguelikeSheet_magenta.bmp" });
+	C_FilePath imagePath = fileSystem.wdRelativePath({ "resources", "roguelikeSheet_magenta.bmp" });
 	logger.log("imagePath: " + imagePath.toString());
 	std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> bmp(SDL_LoadBMP(imagePath.toString().c_str()), &SDL_FreeSurface);
 	if (bmp == nullptr) {

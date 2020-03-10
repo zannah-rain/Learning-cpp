@@ -1,12 +1,12 @@
 #include <memory>
-#include "FileSystem.h"
+#include "FileSystem/FileSystem.h"
 #include "Logger.h"
 // GLAD MUST BE INCLUDED BEFORE glfw
 #include "glad/glad.h"
 #include "glfw3.h"
-#include "Shader.h"
-#include "Texture.h"
-#include "Camera.h"
+#include "OpenGL/Shader.h"
+#include "OpenGL/Texture.h"
+#include "OpenGL/Camera.h"
 
 #include <iostream>
 
@@ -23,8 +23,8 @@ void processInput(GLFWwindow * window, C_Camera * camera, float deltaTime);
 
 int main(int argc, char* argv[])
 {
-	Logger logger;
-	FileSystem fileSystem;
+	C_Logger logger;
+	C_FileSystem fileSystem;
 	C_Camera camera;
 
 	unsigned int cWindowWidth = 640;
@@ -34,10 +34,10 @@ int main(int argc, char* argv[])
 	
 	logger.log("Program started");
 	
-	logger.log("Initial working directory: " + fileSystem.workingDirectory.toString());
+	logger.log("Initial working directory: " + fileSystem.m_WorkingDirectory.toString());
 	logger.log("Executable directory: " + fileSystem.getExeDirectory().toString());
-	fileSystem.workingDirectory--; // Set workingDirectory to the project folder, we aren't going to look for files in /bin/ very often
-	logger.log("New working directory: " + fileSystem.workingDirectory.toString());
+	fileSystem.m_WorkingDirectory--; // Set workingDirectory to the project folder, we aren't going to look for files in /bin/ very often
+	logger.log("New working directory: " + fileSystem.m_WorkingDirectory.toString());
 
 	// Init glfw
 	if (!glfwInit()) {
@@ -170,10 +170,10 @@ int main(int argc, char* argv[])
 	);
 	glEnableVertexAttribArray(2); // Enable color attribute
 
-	Shader shader(fileSystem.wdRelativePath({ "resources", "3dVertexShader.glsl" }).toString().c_str(), 
+	C_Shader shader(fileSystem.wdRelativePath({ "resources", "3dVertexShader.glsl" }).toString().c_str(), 
 				  fileSystem.wdRelativePath({ "resources", "3dFragmentShader.glsl" }).toString().c_str());
 
-	Texture tex(fileSystem.wdRelativePath({ "resources", "roguelikeSheet_magenta.bmp"}));
+	C_Texture tex(fileSystem.wdRelativePath({ "resources", "roguelikeSheet_magenta.bmp"}));
 
 	// The matrices to transform stuff to the 2d screen :)
 	// model matrix goes from model coords to world coords
@@ -192,9 +192,9 @@ int main(int argc, char* argv[])
 	projection = glm::perspective(glm::radians(45.0f), (float)cWindowWidth / (float)cWindowHeight, 0.1f, 100.0f);
 
 	// Send the transformation matrix to the GPU
-	unsigned int modelLoc = glGetUniformLocation(shader.ID, "model");
-	unsigned int viewLoc = glGetUniformLocation(shader.ID, "view");
-	unsigned int projectionLoc = glGetUniformLocation(shader.ID, "projection");
+	unsigned int modelLoc = glGetUniformLocation(shader.m_ID, "model");
+	unsigned int viewLoc = glGetUniformLocation(shader.m_ID, "view");
+	unsigned int projectionLoc = glGetUniformLocation(shader.m_ID, "projection");
 
 	// Enable depth testing
 	glEnable(GL_DEPTH_TEST);

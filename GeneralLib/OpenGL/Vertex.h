@@ -18,6 +18,15 @@ struct S_Vertex
 	*/
 	static std::vector< float > toFloats(std::vector< S_Vertex > vertices);
 
+	/**
+	* Configure a VAO to use the output of toFloats properly if it's in a VBO
+	*/
+	static void configureVAO(std::size_t VAO);
+
+	const static int sc_NumPositions = 3;
+	const static int sc_NumColours = 4;
+	const static int sc_NumTextureCoords = 2;
+	const static int sc_NumNormalCoords = 3;
 
 	float posX; /** The x coordinate in model space*/
 	float posY; /** The y coordinate in model space*/
