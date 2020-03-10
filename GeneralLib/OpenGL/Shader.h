@@ -18,6 +18,19 @@ public:
 	*/
 	C_Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
 
+	/**
+	* Alternatively, instantiate an empty shader for future compilation
+	*/
+	C_Shader();
+
+	/**
+	* Compile the shader
+	* 
+	* @param vertexPath The file path for the vertex shader source
+	* @param fragmentPath The file path for the fragment shader source
+	*/
+	void compile(const GLchar* vertexPath, const GLchar* fragmentPath);
+
 	void use() const; /** use/activate the shader */
 
 	/**

@@ -9,6 +9,18 @@
 
 C_Shader::C_Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 {
+	compile(vertexPath, fragmentPath);
+}
+
+
+C_Shader::C_Shader()
+{
+
+}
+
+
+void C_Shader::compile(const GLchar* vertexPath, const GLchar* fragmentPath)
+{
 	// 1. retrieve the vertex/fragment source code from filePath
 	std::string vertexCode;
 	std::string fragmentCode;
