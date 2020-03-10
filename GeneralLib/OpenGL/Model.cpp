@@ -7,7 +7,7 @@
 
 
 C_Model::C_Model(
-	std::vector< float > vertices,
+	std::vector< S_Vertex > vertices,
 	unsigned short nPositions,
 	unsigned short nColours,
 	unsigned short nTextureCoords,
@@ -24,10 +24,11 @@ C_Model::C_Model(
 	m_NumTextureCoords(nTextureCoords), 
 	m_NumNormalCoords(nNormalCoords),
 	m_WillChangeFrequently(willChangeFrequently),
-	m_NumVertices(vertices.size() / (nPositions + nColours + nTextureCoords + nNormalCoords))
+	m_NumVertices(vertices.size() / (nPositions + nColours + nTextureCoords + nNormalCoords)),
+	m_Vertices(vertices)
 {
 	// Send the vertices to the VBO
-	bufferData(vertices);
+	bufferData();
 }
 
 
@@ -45,10 +46,11 @@ C_Model::C_Model(
 	m_NumTextureCoords(2), 
 	m_NumNormalCoords(3),
 	m_WillChangeFrequently(willChangeFrequently),
-	m_NumVertices(vertices.size())
+	m_NumVertices(vertices.size()),
+	m_Vertices(vertices)
 {
 	// Send the vertices to the VBO
-	bufferData(S_Vertex::toFloats(vertices));
+	bufferData();
 }
 
 
@@ -65,17 +67,20 @@ C_Model::C_Model(
 	, m_NumNormalCoords(3)
 	, m_WillChangeFrequently(willChangeFrequently)
 	, m_NumVertices(vertices.size())
+	, m_Vertices(vertices)
 {
 	glGenVertexArrays(1, &m_VAO);
 	glGenBuffers(1, &m_VBO);
 
 	// Send the vertices to the VBO
-	bufferData(S_Vertex::toFloats(vertices));
+	bufferData();
 }
 
 
-void C_Model::bufferData(std::vector < float > vertices) const
+void C_Model::bufferData() const
 {
+	std::vector < float > vertices(S_Vertex::toFloats(m_Vertices));
+
 	// VBO STUFF
 	// Bind the VBO (The raw vertex data)
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
