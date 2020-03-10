@@ -107,7 +107,10 @@ int main(int argc, char* argv[])
 	// Projection matrix
 	// Applies perspective!
 	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(45.0f), (float)oglHandler.m_WindowWidth / (float)oglHandler.m_WindowHeight, 0.1f, 100.0f);
+	// 3D
+	//projection = glm::perspective(glm::radians(45.0f), (float)oglHandler.m_WindowWidth / (float)oglHandler.m_WindowHeight, 0.1f, 100.0f);
+	// 2D
+	projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
 
 	// Send the transformation matrix to the GPU
 	unsigned int modelLoc = glGetUniformLocation(shader.m_ID, "model");
