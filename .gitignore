@@ -2,3 +2,5 @@
 SDL2-2.0.9
 glfw-3.3
 glm
+*.png
+*.db

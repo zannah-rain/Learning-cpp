@@ -23,7 +23,7 @@ public:
 	* Enables depth testing.
 	* Sets the clear colour.
 	*/
-	bool init(GLFWwindow * window) const;
+	bool init(GLFWwindow * window, bool mode_2d) const;
 
 	/** 
 	* A callback function to keep the openGL viewport size synced with the window size

@@ -9,7 +9,7 @@
 C_OGLHandler::C_OGLHandler() : m_WindowWidth(640), m_WindowHeight(480) {}
 
 
-bool C_OGLHandler::init(GLFWwindow * window) const
+bool C_OGLHandler::init(GLFWwindow * window, bool mode_2d) const
 {
 	// Set the initial dimensions of the output window for openGL
 	glViewport(0, 0, m_WindowWidth, m_WindowHeight);
@@ -20,8 +20,16 @@ bool C_OGLHandler::init(GLFWwindow * window) const
 	std::cout << "C_OGLHandler:: Registered framebufferSizeCallback with glfw" << std::endl;
 
 	// Enable depth testing
-	glEnable(GL_DEPTH_TEST);
-	std::cout << "C_OGLHandler:: Enabled OpenGL depth testing" << std::endl;
+	if (!mode_2d)
+	{
+		glEnable(GL_DEPTH_TEST);
+		std::cout << "C_OGLHandler:: Enabled OpenGL depth testing" << std::endl;
+	}
+	else
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
 
 	// Set the "clear" color we'll overwrite previous frames with before drawing
 	glClearColor(1.0f, 0.0f, 1.0f, 1.0f);

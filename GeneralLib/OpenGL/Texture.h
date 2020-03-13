@@ -1,35 +1,29 @@
 #pragma once
 
-#include <memory>
+#include "glad/glad.h"
+#include "glfw3.h"
 
-// Forward declarations
-class C_FilePath;
-
-
-/**
-* Encapsulates CPU & GPU operations for a single texture object
-*/
-class C_Texture
+// Texture2D is able to store and configure a texture in OpenGL.
+// It also hosts utility functions for easy management.
+class C_Texture2D
 {
 public:
-	/**
-	* Construct a C_Texture object from a file
-	* Loads the file & pushes it to the GPU
-	* 
-	* @param filePath The file path to the physical resource to use as a texture
-	*/
-	C_Texture(C_FilePath filePath);
-
-	/**
-	* Bind this texture in openGL
-	*/
-	void use() const;
-
-	/**
-	* Accessor for _texture
-	*/
-	unsigned int ID() const;
-
-private:
-	unsigned int _texture; /** The openGL ID for the texture*/
+	// Holds the ID of the texture object, used for all texture operations to reference to this particlar texture
+	GLuint ID;
+	// Texture image dimensions
+	GLuint Width, Height; // Width and height of loaded image in pixels
+	// Texture Format
+	GLuint Internal_Format; // Format of texture object
+	GLuint Image_Format; // Format of loaded image
+	// Texture configuration
+	GLuint Wrap_S; // Wrapping mode on S axis
+	GLuint Wrap_T; // Wrapping mode on T axis
+	GLuint Filter_Min; // Filtering mode if texture pixels < screen pixels
+	GLuint Filter_Max; // Filtering mode if texture pixels > screen pixels
+	// Constructor (sets default texture modes)
+	C_Texture2D();
+	// Generates texture from image data
+	void Generate(GLuint width, GLuint height, unsigned char* data);
+	// Binds the texture as the current active GL_TEXTURE_2D texture object
+	void bind() const;
 };

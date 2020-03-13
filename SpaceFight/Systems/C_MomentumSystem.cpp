@@ -35,7 +35,7 @@ void C_MomentumSystem::step(C_World & world, float deltaTime)
 			i.hasComponent(m_ModelComponentID))
 		{
 			// Move from model space to world space
-			m_ModelMatrix = glm::translate(glm::mat4(1.0f), position_component_pool.getComponent(i.getComponentIndex(m_PositionComponentID)).m_Position);
+			// m_ModelMatrix = glm::translate(glm::mat4(1.0f), position_component_pool.getComponent(i.getComponentIndex(m_PositionComponentID)).m_Position);
 
 			// Apply rotation if it has the rotationComponent
 			if (i.hasComponent(m_RotationComponentID))
@@ -45,7 +45,7 @@ void C_MomentumSystem::step(C_World & world, float deltaTime)
 				// Apply momentum if we have all the above + MomentumComponent
 				if (i.hasComponent(m_MomentumComponentID))
 				{
-					position_component_pool.getComponent(i.getComponentIndex(m_PositionComponentID)).m_Position += momentum_component_pool.getComponent(i.getComponentIndex(m_MomentumComponentID)).m_Speed * deltaTime;
+					// position_component_pool.getComponent(i.getComponentIndex(m_PositionComponentID)).m_Position += momentum_component_pool.getComponent(i.getComponentIndex(m_MomentumComponentID)).m_Speed * deltaTime;
 					rotation_component_pool.getComponent(i.getComponentIndex(m_RotationComponentID)).m_Rotation *= glm::quat(momentum_component_pool.getComponent(i.getComponentIndex(m_MomentumComponentID)).m_AngularVelocity * deltaTime);
 				}
 			}

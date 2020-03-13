@@ -4,5 +4,5 @@
 
 struct S_PositionComponent
 {
-	glm::vec3 m_Position;
+	glm::vec2 m_Position;
 };

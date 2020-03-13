@@ -13,10 +13,10 @@ public:
 	/**
 	* Constructor reads and builds the shader
 	* 
-	* @param vertexPath The file path for the vertex shader source
-	* @param fragmentPath The file path for the fragment shader source
+	* @param vertexShaderCode The source code for the vertex shader
+	* @param fragmentShaderCode The source code for the fragment shader
 	*/
-	C_Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
+	C_Shader(const GLchar* vertexShaderCode, const GLchar* fragmentShaderCode);
 
 	/**
 	* Alternatively, instantiate an empty shader for future compilation
@@ -26,10 +26,10 @@ public:
 	/**
 	* Compile the shader
 	* 
-	* @param vertexPath The file path for the vertex shader source
-	* @param fragmentPath The file path for the fragment shader source
+	* @param vertexShaderCode The source code for the vertex shader
+	* @param fragmentShaderCode The source code for the fragment shader
 	*/
-	void compile(const GLchar* vertexPath, const GLchar* fragmentPath);
+	void compile(const GLchar* vertexShaderCode, const GLchar* fragmentShaderCode);
 
 	void use() const; /** use/activate the shader */
 
@@ -60,13 +60,13 @@ public:
 	/**
 	* More utility functions around setting uniforms in the shader
 	*/
-	void    SetVector2f(const GLchar *name, GLfloat x, GLfloat y, GLboolean useShader = false);
-	void    SetVector2f(const GLchar *name, const glm::vec2 &value, GLboolean useShader = false);
-	void    SetVector3f(const GLchar *name, GLfloat x, GLfloat y, GLfloat z, GLboolean useShader = false);
-	void    SetVector3f(const GLchar *name, const glm::vec3 &value, GLboolean useShader = false);
-	void    SetVector4f(const GLchar *name, GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLboolean useShader = false);
-	void    SetVector4f(const GLchar *name, const glm::vec4 &value, GLboolean useShader = false);
-	void    SetMatrix4(const GLchar *name, const glm::mat4 &matrix, GLboolean useShader = false);
+	void    SetVector2f(const GLchar *name, GLfloat x, GLfloat y);
+	void    SetVector2f(const GLchar *name, const glm::vec2 &value);
+	void    SetVector3f(const GLchar *name, GLfloat x, GLfloat y, GLfloat z);
+	void    SetVector3f(const GLchar *name, const glm::vec3 &value);
+	void    SetVector4f(const GLchar *name, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+	void    SetVector4f(const GLchar *name, const glm::vec4 &value);
+	void    SetMatrix4(const GLchar *name, const glm::mat4 &matrix);
 
 	unsigned int m_ID; /** The program m_ID */
 

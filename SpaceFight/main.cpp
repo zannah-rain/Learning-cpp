@@ -1,3 +1,5 @@
+// TODO Get Cmake to link the SOIL static library
+
 #include <memory>
 
 // glad & glfw need loading in this specific order
@@ -11,10 +13,10 @@
 #include "Logger.h"
 #include "OpenGL\Model.cpp"
 #include "OpenGL\OGLHandler.h"
-#include "OpenGL\Shader.h"
-#include "OpenGL\Texture.h"
 #include "OpenGL\Camera.h"
 #include "OpenGL\Vertex.h"
+
+#include "ResourceManager.h"
 
 #include <iostream>
 
@@ -22,16 +24,15 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "glm/gtx/string_cast.hpp"
-#include "glm/gtc/quaternion.hpp"
-#include "glm/gtx/quaternion.hpp"
 
 // ECS stuff
-#include "Systems/C_MomentumSystem.h"
+#include "Systems/C_SpriteSystem.h"
 #include "Components/S_PositionComponent.h"
 #include "Components/S_RotationComponent.h"
 #include "Components/S_ModelComponent.h"
-#include "Components/S_MomentumComponent.h"
+#include "Components/S_SpriteComponent.h"
+
+#include "OpenGL/SpriteRenderer.h"
 
 // A callback function we'll use for changing the openGL viewport size
 void framebuffer_size_callback(GLFWwindow * window, int height, int width);
@@ -43,7 +44,6 @@ int main(int argc, char* argv[])
 {
 	C_Logger logger;
 	C_FileSystem fileSystem;
-	C_Camera camera;
 	C_OGLHandler oglHandler;
 	
 	logger.log("Program started");
@@ -85,53 +85,38 @@ int main(int argc, char* argv[])
 		return 2;
 	}
 
-	oglHandler.init(window.get()); // Initialise global openGL stuff
-
-	std::vector< S_Vertex > cubeVertices;
-
-	loadOBJ(fileSystem.wdRelativePath({ "resources", "cube.obj" }), cubeVertices);
-
-	// Set up and apply our shader (only one so doesn't need to be in the render loop)
-	C_Shader shader(fileSystem.wdRelativePath({ "resources", "3dVertexShader.glsl" }).toString().c_str(), 
-				    fileSystem.wdRelativePath({ "resources", "3dFragmentShader.glsl" }).toString().c_str());
-	shader.use();
-
-	C_Texture tex(fileSystem.wdRelativePath({ "resources", "roguelikeSheet_magenta.bmp" }));
-
-	C_Model cubeModel(cubeVertices, false, &tex);
-
-	// View matrix
-	// Transforms everything relative to the camera position & rotation
-	glm::mat4 view;
+	oglHandler.init(window.get(), true); // Initialise global openGL stuff
 
 	// Projection matrix
-	// Applies perspective!
 	glm::mat4 projection;
-	// 3D
-	//projection = glm::perspective(glm::radians(45.0f), (float)oglHandler.m_WindowWidth / (float)oglHandler.m_WindowHeight, 0.1f, 100.0f);
-	// 2D
-	projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
+	projection = glm::ortho(0.0f, 640.0f, 480.0f, 0.0f, -1.0f, 1.0f);
 
-	// Send the transformation matrix to the GPU
-	unsigned int modelLoc = glGetUniformLocation(shader.m_ID, "model");
-	unsigned int viewLoc = glGetUniformLocation(shader.m_ID, "view");
-	unsigned int projectionLoc = glGetUniformLocation(shader.m_ID, "projection");
+	// Set up and apply our shader (only one so doesn't need to be in the render loop)
+	ResourceManager::LoadShader(
+		fileSystem.wdRelativePath({ "resources", "2dVertexShader.glsl" }).toString().c_str(),
+		fileSystem.wdRelativePath({ "resources", "2dFragmentShader.glsl" }).toString().c_str(),
+		"2DShader");
 
+	ResourceManager::GetShader("2DShader").use();
+	ResourceManager::GetShader("2DShader").setInt("image", 0);
+	ResourceManager::GetShader("2DShader").SetMatrix4("projection", projection);
+	
+	ResourceManager::LoadTexture(fileSystem.wdRelativePath({ "resources", "roguelikeSheet_magenta.bmp" }).toString().c_str(), true, "roguelike_test");
+	ResourceManager::LoadTexture(fileSystem.wdRelativePath({ "resources", "sprites", "PNG", "Default size", "Environment", "medievalEnvironment_01.png" }).toString().c_str(), true, "tree");
+	
+	C_SpriteRenderer spriteRenderer(ResourceManager::GetShader("2DShader"));
 
+	// Set up ECS
 	C_World ECS;
-	ECS.addSystem< C_MomentumSystem >(ECS, modelLoc);
+	ECS.addSystem< C_SpriteSystem >(ECS, &spriteRenderer);
 
 	{
-		unsigned int cubeID = ECS.newEntity();
+		unsigned int treeID = ECS.newEntity();
 
-		ECS.addComponent< S_PositionComponent >(cubeID, S_PositionComponent());
-		ECS.addComponent< S_RotationComponent >(cubeID, S_RotationComponent());
-		ECS.addComponent< S_ModelComponent >(cubeID, S_ModelComponent(&cubeModel));
-		ECS.addComponent< S_MomentumComponent >(cubeID, S_MomentumComponent(glm::vec3(0.0f, 0.0f, -0.1f), glm::vec3(0.1f, 0.1f, 0.2f), 0.0f));
-	}	
-
-	// The projection matrix is constant so we can send it before the render loop
-	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+		ECS.addComponent< S_PositionComponent >(treeID, S_PositionComponent());
+		ECS.addComponent< S_RotationComponent >(treeID, S_RotationComponent());
+		ECS.addComponent< S_SpriteComponent >(treeID, S_SpriteComponent("tree"));
+	}
 
 	// Render loop
 	float deltaTime = 0.0f;
@@ -143,19 +128,19 @@ int main(int argc, char* argv[])
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
-		// Process inputs since last frame
-		processInput(window.get(), &camera, deltaTime);
-
 		// Render stuff
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		// Create the view matrix from the camera
-		view = camera.view();
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		glClear(GL_COLOR_BUFFER_BIT); // Add  | GL_DEPTH_BUFFER_BIT for 3d
 
 		controller.step(deltaTime); // Handle changes in controller state
 
 		ECS.step(deltaTime);
+
+		ResourceManager::GetShader("2DShader").use();
+
+		//spriteRenderer.DrawSprite(ResourceManager::GetTexture("tree"), glm::vec2(-200, -200), glm::vec2(100.0f, 100.0f), 0.0f, glm::vec3(1.0f));
+		spriteRenderer.DrawSprite(ResourceManager::GetTexture("tree"), glm::vec2(200, 200), glm::vec2(100.0f, 100.0f), 0.0f, glm::vec3(1.0f));
+		//spriteRenderer.DrawSprite(ResourceManager::GetTexture("tree"), glm::vec2(-200, 200), glm::vec2(100.0f, 100.0f), 0.0f, glm::vec3(1.0f));
+		//spriteRenderer.DrawSprite(ResourceManager::GetTexture("tree"), glm::vec2(200, -200), glm::vec2(100.0f, 100.0f), 0.0f, glm::vec3(1.0f));
 
 		// We have one buffer for drawing to and one to send to the screen
 		glfwSwapBuffers(window.get());

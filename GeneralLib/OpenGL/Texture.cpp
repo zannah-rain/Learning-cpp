@@ -1,57 +1,39 @@
+// TODO Check if "Generate" is ever actually being called, it doesn't look like it :o
+
 #include <iostream>
 
-#include "glad/glad.h"
-#include "stb_image.h"
+#include "Texture.h"
 
-#include "FileSystem\FilePath.h"
-#include "OpenGL\Texture.h"
-
-
-C_Texture::C_Texture(C_FilePath filePath)
+C_Texture2D::C_Texture2D()
+	: Width(0)
+	, Height(0)
+	, Internal_Format(GL_RGBA)
+	, Image_Format(GL_RGBA)
+	, Wrap_S(GL_REPEAT)
+	, Wrap_T(GL_REPEAT)
+	, Filter_Min(GL_LINEAR)
+	, Filter_Max(GL_LINEAR)
 {
-	int width, height, nrChannels;
-
-	stbi_set_flip_vertically_on_load(true);
-
-	std::unique_ptr<unsigned char, decltype(&stbi_image_free)> data(stbi_load(filePath.toString().c_str(), &width, &height, &nrChannels, 0), &stbi_image_free);
-
-	if (data)
-	{
-		// Generate the texture
-		glGenTextures(1, &_texture);
-		// Bind it so we can write to it
-		glBindTexture(GL_TEXTURE_2D, _texture);
-
-		// Set the texture wrapping / filtering options
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-
-		glTexImage2D(
-			GL_TEXTURE_2D,
-			0,
-			GL_RGB,
-			width,
-			height,
-			0,
-			GL_RGB,
-			GL_UNSIGNED_BYTE,
-			data.get());
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "Failed to load texture" << std::endl;
-	}
+	glGenTextures(1, &this->ID);
 }
 
-
-void C_Texture::use() const
+void C_Texture2D::Generate(GLuint width, GLuint height, unsigned char* data)
 {
-	glBindTexture(GL_TEXTURE_2D, _texture);
+	this->Width = width;
+	this->Height = height;
+	// Create Texture
+	glBindTexture(GL_TEXTURE_2D, this->ID);
+	glTexImage2D(GL_TEXTURE_2D, 0, this->Internal_Format, width, height, 0, this->Image_Format, GL_UNSIGNED_BYTE, data);
+	// Set Texture wrap and filter modes
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this->Wrap_S);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this->Wrap_T);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->Filter_Min);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this->Filter_Max);
+	// Unbind texture
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-
-unsigned int C_Texture::ID() const
+void C_Texture2D::bind() const
 {
-	return _texture;
+	glBindTexture(GL_TEXTURE_2D, this->ID);
 }
